@@ -1,0 +1,18 @@
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.505);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 100%;
+    width: 100%;
+}
+
+.spinner-border {
+    width: 5rem;
+    height: 5rem;
+    color: white;
+}

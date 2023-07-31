@@ -1,0 +1,45 @@
+.artist {
+    background-color: rgb(173, 173, 173);
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+}
+
+.artist {
+    background-image: url("../../../public/images/forget\ images.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.anchor {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    text-size-adjust: 50px;
+}
+
+input {
+    border: black;
+}
+
+.usergo {
+    color: white;
+}
+
+.change {
+    background-color: rgba(0, 0, 0, 0.682);
+    border-radius: 8px;
+    padding: 10px;
+    width: 387px !important;
+    height: 250px;
+}
+
+
+.artist_login {
+    font-size: 35px !important;
+    padding-bottom: 30px !important;
+    color: rgb(0, 0, 0);
+}
