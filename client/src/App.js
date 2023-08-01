@@ -26,6 +26,10 @@ import ForgotPasswordAdmin from './Pages/Admin/forgotPassword';
 import Otp from './Pages/User/otp';
 import UserList from './Pages/Admin/userList';
 import ArtistList from './Pages/Admin/artistList';
+import ListBanner from './Pages/Admin/listBanner';
+import AddBanner from './Pages/Admin/addBanner';
+import Category from './Pages/Admin/category';
+import AddCategory from './Pages/Admin/addCategory';
 
 function App() {
   const { loading } = useSelector(state => state.alerts)
@@ -35,10 +39,6 @@ function App() {
         <div class="spinner-border" role="status">
         </div>
       </div>)}
-      {/* <PublicRoute> */}
-      {/* <GusetHeader /> */}
-      {/* </PublicRoute> */}
-      {/* <Adminheader /> */}
       <Toaster
         position="top-center" reverseOrder={false} />
       <Routes>
@@ -62,7 +62,10 @@ function App() {
         <Route path='/admin' element={<AdminProtectedRoute>< AdminHome /></AdminProtectedRoute>} />
         <Route path='/admin/userlist' element={<AdminProtectedRoute><UserList /></AdminProtectedRoute>} />
         <Route path='/admin/artistList' element={<AdminProtectedRoute><ArtistList /></AdminProtectedRoute >} />
-
+        <Route path='/admin/banner' element={<AdminProtectedRoute><ListBanner /></AdminProtectedRoute >} />
+        <Route path='/admin/Addbanner' element={<AdminProtectedRoute><AddBanner /></AdminProtectedRoute >} />
+        <Route path='/admin/category' element={<AdminProtectedRoute><Category /></AdminProtectedRoute >} />
+        <Route path='/admin/addcategory' element={<AdminProtectedRoute><AddCategory /></AdminProtectedRoute >} />
       </Routes>
     </BrowserRouter >
   );

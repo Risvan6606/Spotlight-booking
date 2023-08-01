@@ -77,8 +77,8 @@ const signUp = async (req, res) => {
             const passwordHash = await sequirePassword(req.body.password)
             req.body.password = passwordHash
             const newArtist = new artistModel(req.body)
-            const test = await newArtist.save();
-            const sample = await artistModel.updateOne({ email: req.body.email }, { $set: { otp: otp } })
+            await newArtist.save();
+            await artistModel.updateOne({ email: req.body.email }, { $set: { otp: otp } })
             res.status(200).send({ message: 'Opt sended your mail', success: true, otp: subOtp })
         }
     } catch (error) {
@@ -100,7 +100,10 @@ const login = async (req, res) => {
                 expiresIn: "1d"
             })
             res.status(200).send({ message: 'Login successfull', success: true, data: token })
-        } else {
+        } else if (user.otp === 'Blocked') {
+            return res.status(200).send({ message: 'You are in Blocked', success: false })
+        }
+        else {
             res.status(200).send({ message: 'please sign up ', success: false })
         }
     } catch (error) {

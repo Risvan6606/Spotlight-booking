@@ -64,3 +64,24 @@
     height: 100vh;
     background-image: url("../../../public/images/adminSetpasword.webp")
 }
+
+/* categery */
+.category_input {
+    background: rgba(128, 128, 128, 0.177);
+    border: 1px solid;
+}
+
+.category_div {
+
+    border: 1px solid rgba(0, 0, 0, 0.686);
+    margin-top: 116px !important;
+    margin-right: 134px;
+    margin-left: 353px;
+    box-shadow: 0 0 10px rgba(96, 94, 94, 0.5);
+    width: 35%;
+}
+
+.category_heading {
+    font-size: 30px;
+    margin-left: 16%;
+}

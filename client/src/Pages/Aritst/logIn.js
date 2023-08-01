@@ -13,7 +13,6 @@ function AristLogin() {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
-
     })
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -49,7 +48,7 @@ function AristLogin() {
                     <h2 className=" text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 artist_login">
                         LOG IN
                     </h2>
-                </div>
+                </div>/
 
                 <div className=" change" >
                     <form className="space-y-6" onSubmit={handelSubmit}>

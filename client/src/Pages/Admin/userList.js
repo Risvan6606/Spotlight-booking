@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Adminlayout from '../../componants/admin/Adminlayout'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
@@ -9,17 +9,16 @@ import Swal from 'sweetalert2';
 
 
 function UserList() {
-
+    const [search, setSearch] = useState("")
     const dispatch = useDispatch();
     const users = useSelector((state) => state.user.user);
     const getData = async () => {
         try {
             const response = await axios.post('/api/admin/get-user-data')
             if (response.data.success) {
-                // toast(response.data.message)
                 dispatch(setUser(response.data.data))
             } else {
-                toast.error(response.data.message)
+                toast(response.data.message)
             }
         } catch (error) {
             toast.error('somthing went worng')
@@ -50,7 +49,6 @@ function UserList() {
                         } else {
                             toast(response.data.message)
                         }
-
                     }
                 })
             } else {
@@ -88,20 +86,26 @@ function UserList() {
         getData()
     }, [])
 
+
     return (
         <>
             <Adminlayout />
             <div className="p-5 sm:ml-64 ">
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg py-11">
                     <div className="flex items-center justify-between pb-4 bg-white dark:bg-gray-900">
-                        <label for="table-search" className="sr-only ml-2">Search</label>
+                        <label htmlFor="table-search" className="sr-only ml-2">Search</label>
                         <div className="relative ml-4">
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                 </svg>
                             </div>
-                            <input type="text" id="table-search-users" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for users" />
+                            <input
+                                type="text"
+                                id="table-search-users"
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Search htmlFor users" />
                         </div>
                     </div>
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -130,9 +134,10 @@ function UserList() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((element, index) => {
-                                console.log(element, 'hello')
-                                return < tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" >
+                            {users.filter((user) => {
+                                return search && search.toLowerCase() === "" ? user : user.first_name.toLowerCase().includes(search.toLowerCase())
+                            }).map((element, index) => {
+                                return < tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={element._id} >
                                     <td className="w-4 p-4">
                                     </td>
                                     <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">

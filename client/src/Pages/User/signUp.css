@@ -121,3 +121,41 @@ input {
 label {
     color: rgb(255, 255, 255) !important;
 }
+
+.bannerAdd {
+    margin-left: 1%;
+    width: 150px;
+    margin-top: 1%;
+    height: 40px;
+    background: rgb(0, 229, 255) !important;
+    font-size: 20px;
+}
+
+.banner-div {
+    border: 1px solid rgba(0, 0, 0, 0.686);
+    margin-top: 116px !important;
+    margin-right: 134px;
+    margin-left: 353px;
+    box-shadow: 0 0 10px rgba(96, 94, 94, 0.5);
+}
+
+.banner_label {
+    color: black !important;
+}
+
+
+.banner_botton {
+    width: 200px;
+    margin-top: 10px;
+    margin-left: 39%;
+    font-size: 15px !important;
+}
+
+.banner_heading {
+    font-size: 30px;
+    margin-left: 37%;
+}
+
+.banner_labels {
+    color: black !important;
+}
