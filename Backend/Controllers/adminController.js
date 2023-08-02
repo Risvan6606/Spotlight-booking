@@ -6,6 +6,20 @@ const userModel = require('../Models/userModel')
 const aritstModel = require('../Models/artistModel')
 const artistModel = require('../Models/artistModel')
 const categoryModel = require('../Models/categoryModel')
+const bannerModel = require('../Models/bannerModel')
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name: 'dqn0v17b6',
+    api_key: '327952536435156',
+    api_secret: '-8iZZ37fkDOB6x05zvHCIXEwPE4',
+    secure: true,
+});
+const opts = {
+    overwrite: true,
+    invalidate: true,
+    resource_type: "auto",
+};
+
 // password hashng
 const sequirePassword = async (password) => {
     try {
@@ -133,7 +147,7 @@ const setPassword = async (req, res) => {
     }
 }
 
-// userList
+// User manege
 const userList = async (req, res) => {
     try {
         const userData = await userModel.find()
@@ -146,7 +160,7 @@ const userList = async (req, res) => {
         res.status(500).send({ message: 'somthing went worng', error })
     }
 }
-// user Block
+
 const blockAndUnblock = async (req, res) => {
     try {
         if (req.body.email) {
@@ -166,7 +180,8 @@ const blockAndUnblock = async (req, res) => {
         res.status(500).send({ message: 'somthing went wrongs', error })
     }
 }
-// arist List
+
+// arist manage
 
 const artistList = async (req, res) => {
     try {
@@ -179,7 +194,6 @@ const artistList = async (req, res) => {
         return res.status(500).send({ message: 'somthing went wrong', success: false, error })
     }
 }
-// artist Block
 const artist_Block_And_Unblock = async (req, res) => {
     try {
         if (req.body.email) {
@@ -199,6 +213,7 @@ const artist_Block_And_Unblock = async (req, res) => {
         res.status(500).send({ message: 'somthing went wrongs', error })
     }
 }
+// category manage
 const addcategory = async (req, res) => {
     try {
         const categoryData = await categoryModel.findOne({ name: req.body.name })
@@ -212,6 +227,83 @@ const addcategory = async (req, res) => {
         res.status(500).send({ message: 'somthing went wrong', success: false, error })
     }
 }
+const getCategoryData = async (req, res) => {
+    try {
+        const categoryData = await categoryModel.find()
+        if (!categoryData) {
+            return res.status.send({ messgae: 'somthing went wronog', success: false })
+        }
+        res.status(200).send({ message: 'data get', success: true, data: categoryData })
+    } catch (error) {
+        res.status(200).send({ message: 'somthing went wrong', success: false, error })
+    }
+}
+
+const listAndUnlistCategory = async (req, res) => {
+    try {
+        if (req.body.unlist === false) {
+            await categoryModel.findByIdAndUpdate(req.body.id, { status: true })
+            return res.status(200).send({ message: 'Category are listed', success: true })
+        } else {
+            await categoryModel.findByIdAndUpdate(req.body.id, { status: false })
+            res.status(200).send({ message: 'Category are Unlisted', success: true })
+        }
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', error })
+    }
+}
+
+// Banner Manegement
+
+const addbanner = async (req, res) => {
+    try {
+        if (req.body.title.trim().length === 0) {
+            return res.status(200).send({ message: 'Space not allowed', success: 'title' })
+        } else if (req.body.discription.trim().length === 0) {
+            return res.status(200).send({ message: 'Space not allowed', success: false })
+        } else {
+            const bannerDatas = await bannerModel.findOne({ title: req.body.title })
+            const banner = await bannerModel.findOne({ discription: req.body.discription })
+            if (bannerDatas) {
+                return res.status(200).send({ message: 'Title already exist', success: 'titles' })
+            } else if (banner) {
+                return res.status(200).send({ message: 'Discription allready exist', success: 'discription' })
+            }
+            const image = req.body.image
+            const uploadImage = await cloudinary.uploader.upload(image, opts)
+            req.body.image = uploadImage.secure_url
+            const bannerData = new bannerModel(req.body)
+            await bannerData.save()
+            res.status(200).send({ message: 'Banner added success full', success: true })
+        }
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', error })
+    }
+}
+const getBannerData = async (req, res) => {
+    try {
+        const bannerData = await bannerModel.find()
+        if (!bannerData) {
+            return res.status(200).send({ message: 'Banners Not available', success: false })
+        }
+        res.status(200).send({ message: 'get banner data', success: true, data: bannerData })
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', error })
+    }
+}
+const bannerListAndUnlist = async (req, res) => {
+    try {
+        if (req.body.unlist === false) {
+            await bannerModel.findByIdAndUpdate(req.body.id, { status: true })
+            return res.status(200).send({ message: 'banner are listed', success: true })
+        } else {
+            await bannerModel.findByIdAndUpdate(req.body.id, { status: false })
+            res.status(200).send({ message: 'banner are Unlisted', success: true })
+        }
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
 
 module.exports = {
     login,
@@ -222,5 +314,10 @@ module.exports = {
     blockAndUnblock,
     artistList,
     artist_Block_And_Unblock,
-    addcategory
+    addcategory,
+    getCategoryData,
+    listAndUnlistCategory,
+    addbanner,
+    getBannerData,
+    bannerListAndUnlist
 }

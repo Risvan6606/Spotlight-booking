@@ -85,3 +85,24 @@
     font-size: 30px;
     margin-left: 16%;
 }
+
+.catogry_list {
+    color: black !important;
+}
+
+.cetegory_botton {
+    width: 90px;
+    font-size: 16px;
+}
+
+.categoryList {
+    color: white;
+    text-decoration: none !important;
+}
+
+/* banner*/
+.bannerImage {
+    width: 90px;
+    height: 60px;
+    border-radius: 7px;
+}

@@ -18,9 +18,14 @@ adminRoute.post('/get-admin-info-by-id', adminAuthmiddileware, adminController.a
 adminRoute.post('/get-user-data', adminController.userList)
 adminRoute.post('/get-artist-data', adminController.artistList)
 adminRoute.post('/addcategory', adminController.addcategory)
+adminRoute.post('/get-category-data', adminController.getCategoryData)
+adminRoute.post('/addbanner', adminController.addbanner)
+adminRoute.post('/get-banner-data', adminController.getBannerData)
 
 // update requests
 adminRoute.patch('/block-and-unblock', adminController.blockAndUnblock)
 adminRoute.patch('/block-and-unblock-artist', adminController.artist_Block_And_Unblock)
+adminRoute.patch('/category-list-unlist', adminController.listAndUnlistCategory)
+adminRoute.patch('/banner-list-unlist', adminController.bannerListAndUnlist)
 
 module.exports = adminRoute         
