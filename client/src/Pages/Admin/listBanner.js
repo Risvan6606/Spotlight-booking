@@ -5,9 +5,12 @@ import { Link } from 'react-router-dom'
 import useBannerData from '../../Hooks/bannerHooks'
 import { toast } from 'react-hot-toast'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { setbanner } from '../../Redux/bannerSlice'
 
 function ListBanner() {
     const { banners } = useBannerData()
+    const dispatch = useDispatch(setbanner(banners))
     const listAndUnlist = async (id, unlist) => {
         try {
             if (unlist) {
@@ -79,11 +82,11 @@ function ListBanner() {
                                         }
                                         {
                                             element.status ? (< td className="px-6 py-4">
-                                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cetegory_botton" onClick={() => listAndUnlist(element._id)} >
+                                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded Banner_botton" onClick={() => listAndUnlist(element._id)} >
                                                     List
                                                 </button>
                                             </td>) : (< td className="px-6 py-4">
-                                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cetegory_botton" onClick={() => listAndUnlist(element._id, element.status)}>
+                                                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded Banner_botton" onClick={() => listAndUnlist(element._id, element.status)}>
                                                     Unlist
                                                 </button>
                                             </td>)

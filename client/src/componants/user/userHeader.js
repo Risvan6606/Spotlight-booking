@@ -5,10 +5,10 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
+    { name: 'Home', href: '/', current: true },
+    { name: 'Aritst', href: '/artist-show', current: false },
+    { name: '', href: '#', current: false },
+    { name: '', href: '#', current: false },
 ]
 
 function classNames(...classes) {
@@ -38,7 +38,7 @@ function UserHeader() {
                                 <div className="flex flex-shrink-0 items-center">
                                     <img
                                         className="h-8 w-auto"
-                                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                                        src="https://res.cloudinary.com/dqn0v17b6/image/upload/v1691169173/qjlyffmyzk9hgxuemjqs.png"
                                         alt="Your Company"
                                     />
                                 </div>

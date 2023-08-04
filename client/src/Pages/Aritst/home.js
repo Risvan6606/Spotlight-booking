@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
+import ArtistHeader from '../../componants/artist/artistHeader'
 
 function ArtistHome() {
     const getData = async () => {
@@ -21,7 +22,10 @@ function ArtistHome() {
     }, [])
 
     return (
-        <div>ArtistHome</div>
+        <>
+            <ArtistHeader />
+            <div>ArtistHome</div>
+        </>
     )
 }
 

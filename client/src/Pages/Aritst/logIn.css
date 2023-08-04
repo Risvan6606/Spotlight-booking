@@ -43,3 +43,34 @@ input {
     padding-bottom: 30px !important;
     color: rgb(0, 0, 0);
 }
+
+.artistDetailsLabel {
+    color: black !important;
+    font-size: 16px;
+}
+
+.artistDetailsInput {
+    color: black !important;
+    background-color: rgb(255, 255, 255);
+    font-size: 15px !important;
+}
+
+.artist_details-form {
+    padding: 2% 10% 0% 10% !important;
+    background: rgba(0, 0, 0, 0.674);
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 2%;
+    border-radius: 10px;
+}
+
+.artist_detail_form_anchor {
+    font-size: 16px !important;
+}
+
+.artistDetails_botton {
+    width: 23%;
+    margin-bottom: 5%;
+    font-size: 20px !important;
+    color: white;
+}

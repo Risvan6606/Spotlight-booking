@@ -2,7 +2,15 @@ const artistModel = require('../Models/artistModel')
 const bcrypt = require('bcrypt')
 const nodeMailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
-
+const sharp = require('sharp')
+const artistMoreDetailsModel = require('../Models/artistDetailsModel')
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name: process.env.cloud_name,
+    api_key: process.env.api_key,
+    api_secret: process.env.api_secret,
+    secure: true,
+});
 // otp generation
 const otpGenerate = () => {
     const otp = Math.floor(Math.random() * 9000) + 1000
@@ -31,7 +39,7 @@ const sendVerifyMail = async (name, email, otp) => {
         }
         trasporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error.message + '1')
+                console.log(error.message)
             } else {
                 console.log('email has send', info.response)
             }
@@ -162,11 +170,63 @@ const setPassword = async (req, res) => {
         res.status(500).send({ message: 'somthing went worng please check', error })
     }
 }
+const artistMoreDetails = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(200).send({ message: 'No image uploaded', success: 'image' })
+        }
+        const moreData = await artistMoreDetailsModel.findOne({ artist_id: req.body.artistId })
+        if (moreData) {
+            return res.status(200).send({ message: 'artist already exist', success: false })
+        }
+        else if (req.body.firstName.trim().length === 0) {
+            return res.status(200).send({ message: 'Space not allowed', success: 'firstName' })
+        } else if (req.body.lastName.trim().length === 0) {
+            return res.status(200).send({ message: 'space not allowed', success: 'lastName' })
+        } else if (req.body.mobile.trim().length === 0 || req.body.mobile.length < 10 || req.body.mobile.length > 10) {
+            return res.status(200).send({ message: 'please enter valid mobile nomber', success: 'mobile' })
+        } else if (req.body.minBudget.trim().length === 0) {
+            return res.status(200).send({ message: 'space not allowed', success: 'min' })
+        } else if (req.body.discription.trim().length === 0) {
+            return res.status(200).send({ message: 'Space not allowed', success: 'dis' })
+        }
+        else {
+            const image = req.file.filename;
+            await sharp("./uploads/artistImages/" + image)
+                .resize(500, 500)
+                .toFile("./uploads/profilImage/" + image)
+            const data = await cloudinary.uploader.upload(
+                "./uploads/profilImage/" + image
+            );
+            const cdnUrl = data.secure_url;
+            const artistMoreData = new artistMoreDetailsModel({
+                artist_id: req.body.artistId,
+                moreDetails: [
+                    {
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        mobile: req.body.mobile,
+                        category: req.body.category,
+                        midBudjet: req.body.minBudget,
+                        availble: req.body.availability,
+                        discription: req.body.discription,
+                        image: cdnUrl
+                    },
+                ],
+            })
+            await artistMoreData.save();
+            res.status(200).send({ message: 'successfulll', success: true })
+        }
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false, error })
+    }
+}
 
 module.exports = {
     signUp,
     login,
     authorization,
     forgotPassword,
-    setPassword
+    setPassword,
+    artistMoreDetails
 }

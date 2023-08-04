@@ -19,5 +19,7 @@ userRoute.post('/otp', userController.otp)
 userRoute.post('/forgot', userController.forgot)
 userRoute.post('/setpassword', userController.setPassword)
 userRoute.post('/get-user-info-by-id', authMiddileware, userController.authorization)
+userRoute.post('/get-home-banner-data', userController.getBannerData)
+userRoute.post('/get-artist-data', authMiddileware, userController.getArtstMoreData)
 
 module.exports = userRoute

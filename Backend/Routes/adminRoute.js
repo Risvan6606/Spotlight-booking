@@ -2,6 +2,7 @@ const express = require('express')
 const adminRoute = express()
 const session = require('express-session')
 const sessionConfig = require('../Config/sessionConfig')
+const upload = require('../Config/multer')
 
 adminRoute.use(session({
     secret: sessionConfig.adminsessionSecrect,
@@ -19,7 +20,8 @@ adminRoute.post('/get-user-data', adminController.userList)
 adminRoute.post('/get-artist-data', adminController.artistList)
 adminRoute.post('/addcategory', adminController.addcategory)
 adminRoute.post('/get-category-data', adminController.getCategoryData)
-adminRoute.post('/addbanner', adminController.addbanner)
+// adminRoute.post('/addbanner', adminController.addbanner)
+adminRoute.post('/addbanner', upload.upload.single('image'), adminAuthmiddileware, adminController.addbanner)
 adminRoute.post('/get-banner-data', adminController.getBannerData)
 
 // update requests

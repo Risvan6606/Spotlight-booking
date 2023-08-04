@@ -7,11 +7,12 @@ const aritstModel = require('../Models/artistModel')
 const artistModel = require('../Models/artistModel')
 const categoryModel = require('../Models/categoryModel')
 const bannerModel = require('../Models/bannerModel')
+const sharp = require('sharp')
 const cloudinary = require('cloudinary').v2
 cloudinary.config({
-    cloud_name: 'dqn0v17b6',
-    api_key: '327952536435156',
-    api_secret: '-8iZZ37fkDOB6x05zvHCIXEwPE4',
+    cloud_name: process.env.cloud_name,
+    api_key: process.env.api_key,
+    api_secret: process.env.api_secret,
     secure: true,
 });
 const opts = {
@@ -257,26 +258,45 @@ const listAndUnlistCategory = async (req, res) => {
 
 const addbanner = async (req, res) => {
     try {
-        if (req.body.title.trim().length === 0) {
-            return res.status(200).send({ message: 'Space not allowed', success: 'title' })
-        } else if (req.body.discription.trim().length === 0) {
-            return res.status(200).send({ message: 'Space not allowed', success: false })
-        } else {
-            const bannerDatas = await bannerModel.findOne({ title: req.body.title })
-            const banner = await bannerModel.findOne({ discription: req.body.discription })
-            if (bannerDatas) {
-                return res.status(200).send({ message: 'Title already exist', success: 'titles' })
-            } else if (banner) {
-                return res.status(200).send({ message: 'Discription allready exist', success: 'discription' })
-            }
-            const image = req.body.image
-            const uploadImage = await cloudinary.uploader.upload(image, opts)
-            req.body.image = uploadImage.secure_url
-            const bannerData = new bannerModel(req.body)
-            await bannerData.save()
-            res.status(200).send({ message: 'Banner added success full', success: true })
-        }
+        // if (req.body.title.trim().length === 0) {
+        //     return res.status(200).send({ message: 'Space not allowed', success: 'title' })
+        // } else if (req.body.discription.trim().length === 0) {
+        //     return res.status(200).send({ message: 'Space not allowed', success: false })
+        // } else {
+        //     const bannerDatas = await bannerModel.findOne({ title: req.body.title })
+        //     const banner = await bannerModel.findOne({ discription: req.body.discription })
+        //     if (bannerDatas) {
+        //         return res.status(200).send({ message: 'Title already exist', success: 'titles' })
+        //     } else if (banner) {
+        //         return res.status(200).send({ message: 'Discription allready exist', success: 'discription' })
+        //     }
+        //     const image = req.body.image
+        //     const uploadImage = await cloudinary.uploader.upload(image, opts)
+        //     req.body.image = uploadImage.secure_url
+        //     const bannerData = new bannerModel(req.body)
+        //     await bannerData.save()
+        //     res.status(200).send({ message: 'Banner added success full', success: true })
+        // }
+        console.log('hellos')
+        const image = req.file.filename;
+        await sharp("./uploads/artistImages/" + image)
+            .resize(1000, 500)
+            .toFile("./uploads/bannerImages/" + image)
+        const data = await cloudinary.uploader.upload(
+            './uploads/bannerImages/' + image
+        )
+        const cdnUrl = data.secure_url;
+        const bannerData = new bannerModel({
+            title: req.body.title,
+            discription: req.body.discription,
+            image: cdnUrl
+        })
+        const datas = await bannerData.save()
+        console.log(datas)
+        res.status(200).send({ message: 'banner data added success full', success: true })
+
     } catch (error) {
+        console.log(error)
         res.status(500).send({ message: 'somthing went wrong', error })
     }
 }

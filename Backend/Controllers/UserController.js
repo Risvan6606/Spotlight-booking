@@ -2,7 +2,8 @@ const userModel = require("../Models/userModel");
 const bcrypt = require('bcrypt');
 const nodeMailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
-
+const bannerModel = require('../Models/bannerModel')
+const artistDetailsModel = require('../Models/artistDetailsModel')
 // otp generating
 
 const otpGenerate = () => {
@@ -216,6 +217,31 @@ const authorization = async (req, res) => {
             .send({ message: 'Error getting user info', success: false, error })
     }
 }
+const getBannerData = async (req, res) => {
+    try {
+        const bannerData = await bannerModel.find({ status: true })
+        if (!bannerData) {
+            return res.status(200).send({ message: 'not get Banner data', success: false })
+        }
+        res.status(200).send({ message: 'Banner data getting successfull', success: true, data: bannerData })
+    } catch (error) {
+        res.status(200).send({ message: 'Somthing went wrong', success: false, error })
+    }
+}
+const getArtstMoreData = async (req, res) => {
+    try {
+        const artistMore = await artistDetailsModel.find()
+        if (!artistMore) {
+            console.log('11111111111111111')
+            return res.status(200).send({ message: 'Artist data getting fail', success: false })
+        }
+        console.log('222222')
+        console.log(artistMore[0].moreDetails[0])
+        res.status(200).send({ message: 'Artist data get', success: true, data: artistMore })
+    } catch (error) {
+        res.status(500).send({ message: 'artist detail getting fail', success: false })
+    }
+}
 
 module.exports = {
     signUp,
@@ -223,7 +249,9 @@ module.exports = {
     authorization,
     forgot,
     setPassword,
-    otp
+    otp,
+    getBannerData,
+    getArtstMoreData
 };
 
 
