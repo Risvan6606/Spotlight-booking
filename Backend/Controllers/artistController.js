@@ -4,6 +4,10 @@ const nodeMailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 const sharp = require('sharp')
 const artistMoreDetailsModel = require('../Models/artistDetailsModel')
+const bannerModel = require('../Models/bannerModel')
+const notificationModel = require('../Models/notificationModel')
+
+
 const cloudinary = require('cloudinary').v2
 cloudinary.config({
     cloud_name: process.env.cloud_name,
@@ -221,6 +225,39 @@ const artistMoreDetails = async (req, res) => {
         res.status(500).send({ message: 'somthing went wrong', success: false, error })
     }
 }
+const getBannerData = async (req, res) => {
+    try {
+        const bannerData = await bannerModel.find({ status: true })
+        const moreData = await artistMoreDetailsModel.findOne({ artist_id: req.body.artistId })
+        // console.log(moreData, 'helloss')
+        if (!bannerData) {
+            return res.status(200).send({ message: 'not get Banner data', success: false })
+        }
+        const notificationData = await notificationModel.findOne({ artist_id: req.body.artistId })
+        res.status(200).send({
+            message: 'Banner data getting successfull', success: true, data: bannerData, notification: notificationData, profile: moreData.moreDetails
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(200).send({ message: 'Somthing went wrong', success: false, error })
+    }
+}
+// notifications
+const notificationData = async (req, res) => {
+    try {
+        const notificationData = await notificationModel.findOne({ artist_id: req.body.artistId })
+        // console.log(notificationData)
+        if (!notificationData) {
+            return res.status(200).send({ message: 'notificatications are Empty', success: false })
+        }
+        res.status(200).send({ message: 'notification Data get', success: true, data: notificationData })
+    } catch (error) {
+        res.status(200).send({ message: 'somthing went wrong', success: false })
+    }
+}
+
+// artist data
+
 
 module.exports = {
     signUp,
@@ -228,5 +265,7 @@ module.exports = {
     authorization,
     forgotPassword,
     setPassword,
-    artistMoreDetails
+    artistMoreDetails,
+    getBannerData,
+    notificationData,
 }

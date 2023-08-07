@@ -18,5 +18,8 @@ artistRoute.post('/forgotpassword', artistController.forgotPassword)
 artistRoute.post('/setpassword', artistController.setPassword)
 artistRoute.post('/get-artist-info-by-id', artistAuthmiddileware, artistController.authorization)
 artistRoute.post('/artist-more-details', upload.upload.single('image'), artistAuthmiddileware, artistController.artistMoreDetails)
+artistRoute.post('/get-artisthome-banner-data', artistAuthmiddileware, artistController.getBannerData)
+artistRoute.post('/get-notification-data', artistAuthmiddileware, artistController.notificationData)
+
 
 module.exports = artistRoute

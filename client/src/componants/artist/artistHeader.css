@@ -1,0 +1,10 @@
+.artist-header {
+    display: flex;
+}
+
+.artist_count {
+    background-color: rgba(255, 0, 0, 0.818) !important;
+    border-radius: 10px;
+    width: 19px;
+    color: white;
+}

@@ -32,6 +32,9 @@ import Category from './Pages/Admin/category';
 import AddCategory from './Pages/Admin/addCategory';
 import ArtistDetailsForm from './Pages/Aritst/artistDetailsForm';
 import Artist from './Pages/User/artist';
+import ArtistView from './Pages/User/artistView';
+import BookArist from './Pages/User/bookArist';
+import Notification from './Pages/Aritst/notification';
 
 function App() {
   const { loading } = useSelector(state => state.alerts)
@@ -51,6 +54,8 @@ function App() {
         <Route path='/setpassword' element={<PublicRoute><SetPassword /></PublicRoute>} />
         <Route path='/' element={<ProtectedRoute>< Home /></ProtectedRoute>} />
         <Route path='/artist-show' element={<ProtectedRoute>< Artist /></ProtectedRoute>} />
+        <Route path='/artist-single-show' element={<ProtectedRoute>< ArtistView /></ProtectedRoute>} />
+        <Route path='/book-artist' element={<ProtectedRoute>< BookArist /></ProtectedRoute>} />
         {/* Artist Side */}
         <Route path='/artist/login' element={<AritstPublicRoute>< ArtistLogin /></AritstPublicRoute>} />
         <Route path='/artist/signUp' element={<AritstPublicRoute><ArtistSignup /></AritstPublicRoute>} />
@@ -59,6 +64,7 @@ function App() {
         <Route path='/artist/otvalidation' element={<OtpValidationForm />} />
         <Route path='/artist' element={<ArtistProtectedRoute>< ArtistHome /></ArtistProtectedRoute >} />
         <Route path='/artist/artistdetailsform' element={<ArtistProtectedRoute><ArtistDetailsForm /></ArtistProtectedRoute >} />
+        <Route path='/artist/notification' element={<ArtistProtectedRoute><Notification /></ArtistProtectedRoute >} />
 
         {/* Admin Side */}
         <Route path='/admin/login' element={<AdminPublicroute>< Adminlogin /></AdminPublicroute >} />

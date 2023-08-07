@@ -4,6 +4,8 @@ const nodeMailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 const bannerModel = require('../Models/bannerModel')
 const artistDetailsModel = require('../Models/artistDetailsModel')
+const bookingModel = require('../Models/bookingSchema')
+const notificationModel = require('../Models/notificationModel')
 // otp generating
 
 const otpGenerate = () => {
@@ -34,6 +36,7 @@ const sendVerifyMail = async (name, email) => {
             subject: 'For verifation mail',
             html: `<p>Hi ${name} this is your otp${otp}`
         }
+        // Object.freeze(mailOptions);
         trasporter.sendMail(mailOptions, (error, info) => {
             if (error) {
 
@@ -46,41 +49,6 @@ const sendVerifyMail = async (name, email) => {
         console.log(error.message)
     }
 }
-
-// registration
-// const signUp = async (req, res) => {
-//     try {
-//         if (req.body.otp == otps && req.body.otp) {
-//             const password = req.body.password;
-//             const salt = await bcrypt.genSalt(10);
-//             const hashedPassword = await bcrypt.hash(password, salt);
-//             req.body.password = hashedPassword;
-//             const newUser = new userModel(req.body);
-//             await newUser.save();
-//             return res.status(200).send({ message: 'signUp has been success full', success: true })
-//         } else if (req.body.otp !== undefined && req.body.otp !== otps) {
-//             return res.status(200).send({ message: 'otp is inccorect', success: 'inccorect' })
-//         }
-//         const userExist = await userModel.findOne({ email: req.body.email });
-//         if (userExist) {
-//             return res.status(200).send({ message: 'User already exists', success: false });
-
-//         } else if (req.body.first_name.trim().length === 0 ||
-//             req.body.last_name.trim().length === 0 ||
-//             req.body.mobile.trim().length === 0 ||
-//             req.body.password.trim().length === 0) {
-//             return res.status(200).send({ message: 'Space not allowed ', success: 'space' })
-//         } else if (req.body.mobile.length < 10 || req.body.mobile.length > 10) {
-//             return res.status(200).send({ message: 'Please Enter valid mobile Nomber', success: 'mobile' })
-//         }
-//         const fullName = req.body.first_name.concat(' ', req.body.last_name)
-//         sendVerifyMail(fullName, req.body.email)
-//         res.status(200).send({ message: 'Otp has send', success: 'otp' });
-//     } catch (error) {
-//         console.log('Error occurred while creating user:', error);
-//         res.status(500).send({ message: 'Error creating user', success: false });
-//     }
-// };
 const signUp = async (req, res) => {
     try {
         const user = await userModel.findOne({ email: req.body.email })
@@ -217,6 +185,7 @@ const authorization = async (req, res) => {
             .send({ message: 'Error getting user info', success: false, error })
     }
 }
+// banner
 const getBannerData = async (req, res) => {
     try {
         const bannerData = await bannerModel.find({ status: true })
@@ -228,18 +197,78 @@ const getBannerData = async (req, res) => {
         res.status(200).send({ message: 'Somthing went wrong', success: false, error })
     }
 }
+// artist more Details       
 const getArtstMoreData = async (req, res) => {
     try {
         const artistMore = await artistDetailsModel.find()
         if (!artistMore) {
-            console.log('11111111111111111')
             return res.status(200).send({ message: 'Artist data getting fail', success: false })
         }
-        console.log('222222')
-        console.log(artistMore[0].moreDetails[0])
         res.status(200).send({ message: 'Artist data get', success: true, data: artistMore })
     } catch (error) {
         res.status(500).send({ message: 'artist detail getting fail', success: false })
+    }
+}
+
+const aritsView = async (req, res) => {
+    try {
+        const artistMoreData = await artistDetailsModel.findById(req.body.artistId)
+        if (!artistMoreData) {
+            return res.status(200).send({ message: 'Not get artist data', success: false })
+        }
+        res.status(200).send({ message: 'get artist data', success: true, data: artistMoreData })
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+
+// book artist
+
+const aritistBooking = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.body.userId)
+        const isMatch = await bcrypt.compare(req.body.password, user.password)
+        if (!isMatch) {
+            return res.status(200).send({ message: 'password is incorrect please tray again', success: false })
+        }
+        const bookingData = new bookingModel({
+            user_id: req.body.userId,
+            artist_id: req.body.artist_id,
+            orders: [
+                {
+                    firstName: req.body.firstName,
+                    amount: req.body.amount,
+                    email: req.body.email,
+                    artist: req.body.artist,
+                    state: req.body.state,
+                    district: req.body.district,
+                    pincode: req.body.pincode,
+                    address: req.body.address,
+                    date: req.body.date
+                }
+            ]
+        })
+        await bookingData.save()
+        const isdata = await notificationModel.findOne({ user_id: req.body.userId });
+        const isdatas = await notificationModel.findOne({ artist_id: req.body.artist_id })
+        if (isdata && isdatas) {
+            await notificationModel.updateOne({ user_id: req.body.userId, artist_id: req.body.artist_id }, { $push: { notifications: { name: 'have a booking' } } })
+        } else {
+            const newNotification = notificationModel({
+                user_id: req.body.userId,
+                artist_id: req.body.artist_id,
+                notifications: [
+                    {
+                        name: 'have a booking'
+                    }
+                ]
+            })
+            await newNotification.save()
+        }
+        res.status(200).send({ message: 'Booking success full', success: true })
+    } catch (error) {
+        console.log(error)
+        res.status(200).send({ message: 'somthing went wrong', success: false, error })
     }
 }
 
@@ -251,7 +280,9 @@ module.exports = {
     setPassword,
     otp,
     getBannerData,
-    getArtstMoreData
+    getArtstMoreData,
+    aritsView,
+    aritistBooking
 };
 
 

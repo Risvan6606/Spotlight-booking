@@ -15,7 +15,6 @@ function Home() {
                     }
                 })
             setBanner(response.data.data);
-            console.log(banner[0].image)
         } catch (error) {
             console.log(error)
         }

@@ -21,5 +21,8 @@ userRoute.post('/setpassword', userController.setPassword)
 userRoute.post('/get-user-info-by-id', authMiddileware, userController.authorization)
 userRoute.post('/get-home-banner-data', userController.getBannerData)
 userRoute.post('/get-artist-data', authMiddileware, userController.getArtstMoreData)
+userRoute.post('/artist-view', authMiddileware, userController.aritsView)
+userRoute.post('/bookartist', authMiddileware, userController.aritistBooking)
+
 
 module.exports = userRoute

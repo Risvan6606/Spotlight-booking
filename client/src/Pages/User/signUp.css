@@ -159,3 +159,13 @@ label {
 .banner_labels {
     color: black !important;
 }
+/* booking -form */
+.bookng-form-div{
+    background:#0F9F8B;
+    border-radius:10px;
+    width:65%;
+    margin-left:17%
+}
+.booking-form-main-div{
+   
+}

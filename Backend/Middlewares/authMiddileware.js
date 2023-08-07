@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+
 module.exports = async (req, res, next) => {
     try {
         const token = req.headers['authorization'].split(' ')[1]
@@ -10,12 +11,12 @@ module.exports = async (req, res, next) => {
                         success: false
                     })
             } else {
+                console.log('next')
                 req.body.userId = decoded.id;
                 next()
             }
         })
     } catch (error) {
-        console.log(error)
         return res.status(401).send({
             message: 'Auth failed',
             success: false

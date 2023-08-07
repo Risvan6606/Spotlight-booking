@@ -4,6 +4,10 @@ import alertSlice from "./alertSlice";
 import userSlice from "./userSlice";
 import artistSlice from "./artistSlice";
 import bannerSlice from "./bannerSlice";
+import singleArtistSlice from "./singleArtistSlice";
+import notificationSlice from "./notificationSlice";
+import aritsMoreSlice from "./aritsMoreSlice";
+
 
 // const rootReducer = combineReducers({
 //     alerts: alertSlice
@@ -13,7 +17,10 @@ const store = configureStore({
         alerts: alertSlice,
         user: userSlice,
         artist: artistSlice,
-        banner: bannerSlice
+        banner: bannerSlice,
+        singleArtist: singleArtistSlice,
+        notification: notificationSlice,
+        artistMore: aritsMoreSlice
     }
 })
 export default store;
