@@ -35,6 +35,11 @@ import Artist from './Pages/User/artist';
 import ArtistView from './Pages/User/artistView';
 import BookArist from './Pages/User/bookArist';
 import Notification from './Pages/Aritst/notification';
+import ViewBooking from './Pages/Aritst/viewBooking';
+import Bookings from './Pages/Aritst/bookings';
+import ArtistAdminView from './Pages/Admin/artistView';
+import UserProfile from './Pages/User/userProfile';
+
 
 function App() {
   const { loading } = useSelector(state => state.alerts)
@@ -53,6 +58,7 @@ function App() {
         <Route path='/forgot' element={<PublicRoute><Forgotpassword /></PublicRoute>} />
         <Route path='/setpassword' element={<PublicRoute><SetPassword /></PublicRoute>} />
         <Route path='/' element={<ProtectedRoute>< Home /></ProtectedRoute>} />
+        <Route path='/profile' element={<ProtectedRoute>< UserProfile /></ProtectedRoute>} />
         <Route path='/artist-show' element={<ProtectedRoute>< Artist /></ProtectedRoute>} />
         <Route path='/artist-single-show' element={<ProtectedRoute>< ArtistView /></ProtectedRoute>} />
         <Route path='/book-artist' element={<ProtectedRoute>< BookArist /></ProtectedRoute>} />
@@ -65,6 +71,8 @@ function App() {
         <Route path='/artist' element={<ArtistProtectedRoute>< ArtistHome /></ArtistProtectedRoute >} />
         <Route path='/artist/artistdetailsform' element={<ArtistProtectedRoute><ArtistDetailsForm /></ArtistProtectedRoute >} />
         <Route path='/artist/notification' element={<ArtistProtectedRoute><Notification /></ArtistProtectedRoute >} />
+        <Route path='/artist/viewbooking' element={<ArtistProtectedRoute><  ViewBooking /></ArtistProtectedRoute >} />
+        <Route path='/artist/bookings' element={<ArtistProtectedRoute><  Bookings /></ArtistProtectedRoute >} />
 
         {/* Admin Side */}
         <Route path='/admin/login' element={<AdminPublicroute>< Adminlogin /></AdminPublicroute >} />
@@ -74,6 +82,7 @@ function App() {
         <Route path='/admin/userlist' element={<AdminProtectedRoute><UserList /></AdminProtectedRoute>} />
         <Route path='/admin/artistList' element={<AdminProtectedRoute><ArtistList /></AdminProtectedRoute >} />
         <Route path='/admin/banner' element={<AdminProtectedRoute><ListBanner /></AdminProtectedRoute >} />
+        <Route path='/admin/artistdetails' element={<AdminProtectedRoute><ArtistAdminView /></AdminProtectedRoute >} />
         <Route path='/admin/Addbanner' element={<AdminProtectedRoute><AddBanner /></AdminProtectedRoute >} />
         <Route path='/admin/category' element={<AdminProtectedRoute><Category /></AdminProtectedRoute >} />
         <Route path='/admin/addcategory' element={<AdminProtectedRoute><AddCategory /></AdminProtectedRoute >} />

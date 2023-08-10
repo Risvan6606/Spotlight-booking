@@ -5,7 +5,6 @@ import userSlice from "./userSlice";
 import artistSlice from "./artistSlice";
 import bannerSlice from "./bannerSlice";
 import singleArtistSlice from "./singleArtistSlice";
-import notificationSlice from "./notificationSlice";
 import aritsMoreSlice from "./aritsMoreSlice";
 
 
@@ -19,7 +18,6 @@ const store = configureStore({
         artist: artistSlice,
         banner: bannerSlice,
         singleArtist: singleArtistSlice,
-        notification: notificationSlice,
         artistMore: aritsMoreSlice
     }
 })

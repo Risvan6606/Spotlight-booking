@@ -20,6 +20,10 @@ artistRoute.post('/get-artist-info-by-id', artistAuthmiddileware, artistControll
 artistRoute.post('/artist-more-details', upload.upload.single('image'), artistAuthmiddileware, artistController.artistMoreDetails)
 artistRoute.post('/get-artisthome-banner-data', artistAuthmiddileware, artistController.getBannerData)
 artistRoute.post('/get-notification-data', artistAuthmiddileware, artistController.notificationData)
+artistRoute.post('/get-booking-data', artistAuthmiddileware, artistController.bookingDatas)
+artistRoute.post('/accept_and_reject', artistAuthmiddileware, artistController.acceptAndReject)
+// artistRoute.post('/get-all-booking-datas', artistAuthmiddileware, artistController.allBookings)
+
 
 
 module.exports = artistRoute

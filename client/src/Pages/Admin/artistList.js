@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Adminlayout from '../../componants/admin/Adminlayout'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
 // import { setUser } from '../../Redux/userSlice'
 import Swal from 'sweetalert2';
@@ -13,6 +13,7 @@ function ArtistList() {
     const [search, setSearch] = useState("")
     const dispatch = useDispatch()
     const artist = useSelector((state) => state.artist.artist)
+    const Navigate = useNavigate()
     const getData = async () => {
         try {
             const response = await axios.post('/api/admin/get-artist-data')
@@ -87,6 +88,13 @@ function ArtistList() {
             }
         } catch (error) {
             toast.error('somthing went wrong')
+        }
+    }
+    const goArtistViewPage = async (artist_id) => {
+        try {
+            Navigate('/admin/artistdetails', { state: artist_id })
+        } catch (error) {
+            toast('somthing went wrong')
         }
     }
 
@@ -188,13 +196,11 @@ function ArtistList() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 mr-5">
-                                        <Button className='primary my-1' htmlType='submit'>
+                                        <Button className='primary my-1 artist_view' htmlType='submit' onClick={() => goArtistViewPage(element._id)}>
                                             view
                                         </Button>
                                     </td>
                                 </tr>
-
-
                             })}
                         </tbody>
                     </table>

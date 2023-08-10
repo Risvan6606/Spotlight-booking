@@ -5,7 +5,10 @@ const jwt = require('jsonwebtoken')
 const sharp = require('sharp')
 const artistMoreDetailsModel = require('../Models/artistDetailsModel')
 const bannerModel = require('../Models/bannerModel')
-const notificationModel = require('../Models/notificationModel')
+const notificationModel = require('../Models/artistNotificationModel')
+const userNotificationModel = require('../Models/userNotificationModel')
+const bookingModel = require('../Models/bookingSchema')
+const categoryModel = require('../Models/categoryModel')
 
 
 const cloudinary = require('cloudinary').v2
@@ -203,8 +206,10 @@ const artistMoreDetails = async (req, res) => {
                 "./uploads/profilImage/" + image
             );
             const cdnUrl = data.secure_url;
+            const categoryData = await categoryModel.findOne({ name: req.body.category })
             const artistMoreData = new artistMoreDetailsModel({
                 artist_id: req.body.artistId,
+                category_id: categoryData._id,
                 moreDetails: [
                     {
                         firstName: req.body.firstName,
@@ -229,7 +234,6 @@ const getBannerData = async (req, res) => {
     try {
         const bannerData = await bannerModel.find({ status: true })
         const moreData = await artistMoreDetailsModel.findOne({ artist_id: req.body.artistId })
-        // console.log(moreData, 'helloss')
         if (!bannerData) {
             return res.status(200).send({ message: 'not get Banner data', success: false })
         }
@@ -239,24 +243,135 @@ const getBannerData = async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        res.status(200).send({ message: 'Somthing went wrong', success: false, error })
+        res.status(500).send({ message: 'Somthing went wrong', success: false, error })
     }
 }
 // notifications
+
 const notificationData = async (req, res) => {
     try {
         const notificationData = await notificationModel.findOne({ artist_id: req.body.artistId })
-        // console.log(notificationData)
         if (!notificationData) {
             return res.status(200).send({ message: 'notificatications are Empty', success: false })
         }
-        res.status(200).send({ message: 'notification Data get', success: true, data: notificationData })
+        const showDatas = notificationData.notifications.filter(trues => trues.status === true)
+        res.status(200).send({ message: 'notification Data get', success: true, data: showDatas })
     } catch (error) {
-        res.status(200).send({ message: 'somthing went wrong', success: false })
+        res.status(500).send({ message: 'somthing went wrong', success: false })
     }
 }
 
-// artist data
+// booking Data
+const bookingDatas = async (req, res) => {
+    try {
+        const bookingData = await bookingModel.findOne({ artist_id: req.body.artistId })
+        const singleDatas = bookingData.orders.filter(datas => datas._id.toString() === req.body.booking_id)
+        if (!bookingData) {
+            return res.status(200).send({ message: 'Booking data getting fail', success: false })
+        } else {
+            res.status(200).send({ message: 'Booking data get success full', success: true, data: singleDatas })
+        }
+    } catch (error) {
+        console.log(error, 'comes')
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+// booking accept and reject 
+const acceptAndReject = async (req, res) => {
+    try {
+        if (req.body.id && req.body.email) {
+            await bookingModel.updateOne({ artist_id: req.body.artistId, "orders._id": req.body.id }, { $set: { "orders.$.status": "Rejected" } })
+            await notificationModel.updateOne({ artist_id: req.body.artistId, "notifications.booking_id": req.body.id }, { $set: { "notifications.$.status": false } })
+            // editing
+            const datas = await bookingModel.findOne({ artist_id: req.body.artistId })
+            const users = datas.orders.filter((items) => items._id.toString() === req.body.id)
+            const booking_id = users[0]._id
+            const userNotificationData = await userNotificationModel.findOne({ user_id: req.body.user_id })
+            if (userNotificationData) {
+                await userNotificationModel.updateOne({ user_id: req.body.user_id },
+                    {
+                        $push:
+                        {
+                            notifications:
+                            {
+                                name: "your booking has been Rejected",
+                                booking_id: booking_id
+                            }
+                        }
+                    })
+            } else {
+                const notificationData = new userNotificationModel({
+                    user_id: req.body.user_id,
+                    notifications: [
+                        {
+                            name: "your booking has been Rejected",
+                            booking_id: booking_id
+                        }
+                    ]
+                })
+                await notificationData.save()
+            }
+            // editing end
+            res.status(200).send({ message: 'Booking has been rejected', success: true })
+        } else {
+            await bookingModel.updateOne({ artist_id: req.body.artistId, "orders._id": req.body.id }, { $set: { "orders.$.status": "Accepted" } })
+            await notificationModel.updateOne({ artist_id: req.body.artistId, "notifications.booking_id": req.body.id }, { $set: { "notifications.$.status": false } })
+            // Edited
+            const datas = await bookingModel.findOne({ artist_id: req.body.artistId })
+            const users = datas.orders.filter((items) => items._id.toString() === req.body.id)
+            const booking_id = users[0]._id
+            // sub edit
+            const userNotificationData = await userNotificationModel.findOne({ user_id: req.body.user_id })
+            if (userNotificationData) {
+                await userNotificationModel.updateOne({ user_id: req.body.user_id },
+                    {
+                        $push:
+                        {
+                            notifications:
+                            {
+                                name: "your booking has been accepted",
+                                booking_id: booking_id
+                            }
+                        }
+                    })
+            } else {
+                // sub edit end
+                const notificationData = new userNotificationModel({
+                    user_id: req.body.user_id,
+                    notifications: [
+                        {
+                            name: "your booking has been accepted",
+                            booking_id: booking_id
+                        }
+                    ]
+                })
+                await notificationData.save()
+            }
+            // Edited
+            res.status(200).send({ message: 'Booking has been rejected', success: true })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+// accepted bookings
+
+// const allBookings = async (req, res) => {
+//     try {
+//         console.log(req.body)
+//         const bookingData = await bookingModel.findOne({ artist_id: req.body.artistId })
+//         console.log(bookingData)
+//         const acceptedBookings = bookingData.orders.filter(order => order.status === 'Accepted')
+//         if (!acceptedBookings) {
+//             return res.status(200).send({ message: 'No bookings', success: false })
+//         }
+//         res.status(200).send({ message: 'Bookings get', success: true, data: acceptedBookings })
+//     } catch (error) {
+//         res.status(500).send({ message: 'somthing went wrong', success: false })
+//     }
+// }
+
 
 
 module.exports = {
@@ -268,4 +383,7 @@ module.exports = {
     artistMoreDetails,
     getBannerData,
     notificationData,
+    bookingDatas,
+    acceptAndReject,
+    // allBookings
 }

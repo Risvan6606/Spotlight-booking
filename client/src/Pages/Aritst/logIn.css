@@ -105,3 +105,22 @@ input {
 /* .notification_image_div {
     width: 56px;
 } */
+.booking_infoArtist {
+    padding: 4% 15% 0% 15%;
+
+}
+
+.info_booking_div {
+    background-color: #81E979;
+    padding: 5% 15% 0% 15%;
+    border-radius: 5px;
+}
+
+.booking_view-div {
+    margin-left: 50%;
+}
+
+/* artist bookings information  */
+.bookings_div {
+    padding: 2% 6% 0% 6%;
+}

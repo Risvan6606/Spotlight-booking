@@ -5,7 +5,10 @@ const jwt = require('jsonwebtoken')
 const bannerModel = require('../Models/bannerModel')
 const artistDetailsModel = require('../Models/artistDetailsModel')
 const bookingModel = require('../Models/bookingSchema')
-const notificationModel = require('../Models/notificationModel')
+const notificationModel = require('../Models/artistNotificationModel');
+const artistModel = require("../Models/artistModel");
+const categoryModel = require('../Models/categoryModel')
+
 // otp generating
 
 const otpGenerate = () => {
@@ -34,7 +37,7 @@ const sendVerifyMail = async (name, email) => {
             from: process.env.email,
             to: email,
             subject: 'For verifation mail',
-            html: `<p>Hi ${name} this is your otp${otp}`
+            html: `< p > Hi ${name} this is your otp${otp} `
         }
         // Object.freeze(mailOptions);
         trasporter.sendMail(mailOptions, (error, info) => {
@@ -185,6 +188,16 @@ const authorization = async (req, res) => {
             .send({ message: 'Error getting user info', success: false, error })
     }
 }
+
+// Profile
+const profile = async () => {
+    try {
+
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+
 // banner
 const getBannerData = async (req, res) => {
     try {
@@ -200,11 +213,17 @@ const getBannerData = async (req, res) => {
 // artist more Details       
 const getArtstMoreData = async (req, res) => {
     try {
+        const categoryData = await categoryModel.find()
         const artistMore = await artistDetailsModel.find()
+        // console.log(artistMore[0].moreDetails)
+        // const datas = artistMore.map(element => {
+        //     return element.moreDetails
+        // })
+        // console.log('data:', datas, 'hai')
         if (!artistMore) {
             return res.status(200).send({ message: 'Artist data getting fail', success: false })
         }
-        res.status(200).send({ message: 'Artist data get', success: true, data: artistMore })
+        res.status(200).send({ message: 'Artist data get', success: true, data: artistMore, category: categoryData })
     } catch (error) {
         res.status(500).send({ message: 'artist detail getting fail', success: false })
     }
@@ -231,42 +250,92 @@ const aritistBooking = async (req, res) => {
         if (!isMatch) {
             return res.status(200).send({ message: 'password is incorrect please tray again', success: false })
         }
-        const bookingData = new bookingModel({
-            user_id: req.body.userId,
-            artist_id: req.body.artist_id,
-            orders: [
-                {
-                    firstName: req.body.firstName,
-                    amount: req.body.amount,
-                    email: req.body.email,
-                    artist: req.body.artist,
-                    state: req.body.state,
-                    district: req.body.district,
-                    pincode: req.body.pincode,
-                    address: req.body.address,
-                    date: req.body.date
-                }
-            ]
+        const userbooking = await bookingModel.findOne({ artist_id: req.body.artist_id })
+        const dateValidation = userbooking?.orders.filter((values) => {
+            const dateObject = new Date(values.date);
+            const year = dateObject.getUTCFullYear();
+            const month = String(dateObject.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(dateObject.getUTCDate()).padStart(2, '0');
+            const formatedDate = `${year} -${month} -${day} `;
+            return formatedDate === req.body.date
         })
-        await bookingData.save()
-        const isdata = await notificationModel.findOne({ user_id: req.body.userId });
-        const isdatas = await notificationModel.findOne({ artist_id: req.body.artist_id })
-        if (isdata && isdatas) {
-            await notificationModel.updateOne({ user_id: req.body.userId, artist_id: req.body.artist_id }, { $push: { notifications: { name: 'have a booking' } } })
-        } else {
-            const newNotification = notificationModel({
-                user_id: req.body.userId,
-                artist_id: req.body.artist_id,
-                notifications: [
+        if (dateValidation?.length > 0) {
+            return res.status(200).send({ message: 'This date artist not available', success: false })
+        }
+        if (userbooking) {
+            await bookingModel.updateOne({ artist_id: req.body.artist_id },
+                {
+                    $push:
                     {
-                        name: 'have a booking'
+                        orders:
+                        {
+                            firstName: req.body.firstName,
+                            amount: req.body.amount,
+                            email: req.body.email,
+                            artist: req.body.artist,
+                            state: req.body.state,
+                            district: req.body.district,
+                            pincode: req.body.pincode,
+                            address: req.body.address,
+                            date: req.body.date,
+                            user_id: req.body.userId
+
+                        }
+                    }
+                })
+            const findIndex = await bookingModel.findOne({ artist_id: req.body.artist_id })
+            const bookingSingleData = findIndex.orders[findIndex.orders.length - 1]
+            await notificationModel.updateOne({ artist_id: req.body.artist_id, },
+                {
+                    $push:
+                    {
+                        notifications:
+                        {
+                            name: `${user.first_name} ${user.last_name} have a booking `,
+                            booking_id: bookingSingleData._id
+                        }
+                    }
+
+                }
+            )
+
+        } else {
+            const bookingData = new bookingModel({
+                artist_id: req.body.artist_id,
+                orders: [
+                    {
+                        firstName: req.body.firstName,
+                        amount: req.body.amount,
+                        email: req.body.email,
+                        artist: req.body.artist,
+                        state: req.body.state,
+                        district: req.body.district,
+                        pincode: req.body.pincode,
+                        address: req.body.address,
+                        date: req.body.date,
+                        user_id: req.body.userId
+
                     }
                 ]
             })
-            await newNotification.save()
+            const booking = await bookingData.save()
+            // notification sesson
+            const bookingNotification = new notificationModel({
+                artist_id: req.body.artist_id,
+                notifications: [
+                    {
+                        name: `${user.first_name} ${user.last_name} have a booking`,
+                        booking_id: booking.orders[0]._id
+                    }
+                ]
+            })
+            await bookingNotification.save()
         }
-        res.status(200).send({ message: 'Booking success full', success: true })
-    } catch (error) {
+        const allNotificaions = await notificationModel.findOne({ artist_id: req.body.artist_id })
+        const notificationData = allNotificaions.notifications.filter(notiy => notiy.status === true)
+        res.status(200).send({ message: 'Booking success full', success: true, count: notificationData.length })
+    }
+    catch (error) {
         console.log(error)
         res.status(200).send({ message: 'somthing went wrong', success: false, error })
     }

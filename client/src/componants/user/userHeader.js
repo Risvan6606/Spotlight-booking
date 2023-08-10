@@ -3,6 +3,8 @@ import React from 'react'
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
 
 const navigation = [
     { name: 'Home', href: '/', current: true },
@@ -15,9 +17,19 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
+
 function UserHeader() {
+    const navigate = useNavigate()
+    const signOut = () => {
+        try {
+            localStorage.removeItem('token')
+            navigate('/login')
+        } catch (error) {
+            toast.error('somthing went wrong')
+        }
+    }
     return (
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="bg-gray-800 nav_bar_user">
             {({ open }) => (
                 <>
                     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -96,7 +108,7 @@ function UserHeader() {
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <a
-                                                        href=''
+                                                        href='/profile'
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Your Profile
@@ -116,7 +128,7 @@ function UserHeader() {
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <a
-                                                        href="#"
+                                                        onClick={() => signOut()}
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Sign out

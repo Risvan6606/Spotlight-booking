@@ -1,12 +1,8 @@
 const mongoose = require('mongoose')
 const bookingSchema = mongoose.Schema({
-    user_id: {
-        type: String,
-        ref: 'user',
-        required: true
-    },
     artist_id: {
         type: String,
+        ref: 'artist',
         required: true
     },
     orders: [{
@@ -49,6 +45,10 @@ const bookingSchema = mongoose.Schema({
         status: {
             type: String,
             default: 'pending'
+        },
+        user_id: {
+            type: String,
+            required: true
         }
     }]
 }, {

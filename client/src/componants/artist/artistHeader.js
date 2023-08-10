@@ -6,7 +6,9 @@ import io from 'socket.io-client'
 import { useSelector } from 'react-redux'
 import './artistHeader.css'
 import { request } from '../../axios'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
+
 
 const navigation = [
     { name: 'Home', href: '/artist', current: true },
@@ -20,22 +22,43 @@ function classNames(...classes) {
 }
 
 function ArtistHeader() {
-    const [profile, setProfile] = useState()
-    const notification = useSelector((state) => state.notification.notification);
+    const navigate = useNavigate()
+
+    const [count, setCount] = useState()
     const artistMore = useSelector((state) => state.artistMore.artistMore)
-    console.log(artistMore)
     var newSocket = io('http://localhost:5000');
-    let [count, setCount] = useState(notification?.notifications?.length)
     useEffect(() => {
         newSocket.on('chat message', (message) => {
-            console.log('Received message:', message);
-            setCount(notification?.notifications?.length)
-
+            console.log('Received message: risvan', message);
+            setCount(message)
         });
         return () => {
             newSocket.disconnect();
         };
-    }, [notification?.notifications])
+    }, [])
+    // changed count in depentency
+    useEffect(() => {
+        request({
+            url: '/api/artist/get-notification-data',
+            method: 'post'
+        }).then((response) => {
+            if (response.data.success) {
+                setCount(response.data.data.length)
+            } else {
+                setCount(0)
+            }
+        }).catch((err) => {
+            toast.error('somthing went wrong')
+        })
+    })
+    const signOunt = () => {
+        try {
+            localStorage.removeItem('artistKey')
+            navigate('/artist/login')
+        } catch (error) {
+            toast.error('somthing went wrong')
+        }
+    }
 
     // Edited
     return (
@@ -82,7 +105,6 @@ function ArtistHeader() {
                                 </div>
                             </div>
                             <div className="absolute   inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                {/* <Lint to=''> */}
                                 <a href='/artist/notification'><button
                                     type="button"
                                     className="artist-header d-flex relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -90,12 +112,10 @@ function ArtistHeader() {
                                     <BellIcon className="h-6 w-6" aria-hidden="true" />
                                     <div className='artist_count'>
                                         <h1 >
-                                            {notification?.notifications?.length}
+                                            {count}
                                         </h1>
                                     </div>
                                 </button></a>
-                                {/* </Link > */}
-                                {/* Profile dropdown */}
                                 <Menu as="div" className="relative ml-3">
                                     <div>
                                         <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
@@ -146,7 +166,7 @@ function ArtistHeader() {
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <a
-                                                        href="#"
+                                                        onClick={() => signOunt()}
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Sign out

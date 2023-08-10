@@ -1,0 +1,11 @@
+.footer_main_div {
+    margin-top: 20px;
+    border-top: 2px solid #0000005c;
+    background: #1f2937;
+}
+
+.nav_bar_user {
+    position: sticky;
+    top: 0px;
+    z-index: 999;
+}

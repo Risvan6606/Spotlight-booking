@@ -1,12 +1,8 @@
 const mongoose = require('mongoose')
 const notificationSchema = mongoose.Schema({
-    user_id: {
-        type: String,
-        ref: 'user',
-        required: true
-    },
     artist_id: {
         type: String,
+        ref: 'user',
         required: true
     },
     notifications: [{
@@ -16,11 +12,15 @@ const notificationSchema = mongoose.Schema({
         },
         status: {
             type: Boolean,
-            default: false
-        }
+            default: true
+        },
+        booking_id: {
+            type: String,
+            required: true
+        },
     }]
 }, {
-    capped: { size: 1024, max: 5 },
+    timestamps: true
 })
 const notificationModel = mongoose.model('notification', notificationSchema)
 module.exports = notificationModel

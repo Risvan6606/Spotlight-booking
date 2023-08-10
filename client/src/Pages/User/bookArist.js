@@ -2,28 +2,25 @@ import React, { useEffect, useState } from 'react'
 import UserHeader from '../../componants/user/userHeader'
 import { userRequest } from '../../axios';
 import { toast } from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
-import { setNotifications } from '../../Redux/notificationSlice';
 
 function BookArist() {
     // Edited
-    const dispatch = useDispatch()
-    const notification = useSelector((state) => state.notification.notification);
-    const [socket, setSocket] = useState(null);
-    var newSocket = io('http://localhost:5000');
-    useEffect(() => {
 
-        newSocket.on('chat message', (message) => {
-            console.log('Received message:', message);
-        });
-        // setSocket(newSocket);
-        return () => {
-            newSocket.disconnect();
-        };
-    }, []);
+    var newSocket = io('http://localhost:5000');
+    // useEffect(() => {
+
+    //     newSocket.on('chat message', (message) => {
+    //         console.log('Received message:', message);
+    //     });
+    //     return () => {
+    //         newSocket.disconnect();
+    //     };
+    // }, []);
     // Edited
+
     const navigator = useNavigate()
     const singleArtist = useSelector((state) => state.singleArtist.singleArtist)
 
@@ -96,15 +93,26 @@ function BookArist() {
             }).then((response) => {
                 if (response.data.success) {
                     toast.success(response.data.message)
-                    dispatch(setNotifications('have a booking'))
-                    newSocket.emit('chat message', notification)
+                    newSocket.emit('chat message', response.data.count)
                 } else {
                     toast(response.data.message)
                 }
             }).catch((err) => toast('booking fail'))
         }
     };
+    // date validation
 
+    var date = new Date();
+    var tdate = date.getDate();
+    var month = date.getMonth() + 1
+    if (tdate < 10) {
+        tdate = '0' + tdate
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    var year = date.getUTCFullYear();
+    var minDate = year + '-' + month + '-' + tdate
     return (
         <>
             <UserHeader />
@@ -194,6 +202,7 @@ function BookArist() {
                                     </svg>
                                 </div>
                                 <input id="datepickerId"
+                                    min={minDate}
                                     datepicker type="date"
                                     value={formData.date}
                                     name="date"

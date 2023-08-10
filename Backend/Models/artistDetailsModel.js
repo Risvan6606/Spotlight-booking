@@ -7,6 +7,10 @@ const artistDetailsSchema = mongoose.Schema({
         ref: 'artist',
         required: true
     },
+    category_id: {
+        type: String,
+        required: true
+    },
     moreDetails: [{
         firstName: {
             type: String,

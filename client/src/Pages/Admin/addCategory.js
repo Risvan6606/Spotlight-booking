@@ -20,6 +20,8 @@ function AddCategory() {
     const handelSubmit = async (event) => {
         try {
             event.preventDefault()
+            var capitalizedValue = formData.name.charAt(0).toUpperCase() + formData.name.slice(1);
+            formData.name = capitalizedValue;
             if (formData.name.trim().length === 0) {
                 setValidation('Space not allowed')
             } else {
@@ -34,6 +36,7 @@ function AddCategory() {
             toast.error('somthing went wrong')
         }
     }
+
     return (
         <>
             <Adminlayout />
