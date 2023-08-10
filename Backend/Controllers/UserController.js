@@ -190,9 +190,15 @@ const authorization = async (req, res) => {
 }
 
 // Profile
-const profile = async () => {
+const profile = async (req, res) => {
     try {
-
+        console.log(req.body)
+        const userData = await userModel.findById(req.body.userId)
+        if (!userData) {
+            return res.status(200).send({ message: 'somthing went wrong', success: false })
+        }
+        res.status(200).send({ message: 'user datas get', success: true })
+        console.log(userData)
     } catch (error) {
         res.status(500).send({ message: 'somthing went wrong', success: false })
     }
@@ -345,6 +351,7 @@ module.exports = {
     signUp,
     login,
     authorization,
+    profile,
     forgot,
     setPassword,
     otp,
