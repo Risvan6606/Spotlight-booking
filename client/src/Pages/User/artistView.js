@@ -12,7 +12,7 @@ function ArtistView() {
     return (
         <>
             <UserHeader />
-            <div className="user_artist_view ">
+            {/* <div className="user_artist_view ">
                 <section className='abouts'>
                     <div className='main'>
                         <img src={datas.moreDetails?.[0]?.image} />
@@ -26,7 +26,7 @@ function ArtistView() {
                     <h1 className='minBudjets'>{` Booking rate:  ${datas?.moreDetails?.[0]?.midBudjet}`}</h1>
 
                 </section >
-            </div >
+            </div > */}
             <Footer />
         </>
     )

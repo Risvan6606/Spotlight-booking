@@ -24,7 +24,6 @@ function Notification() {
     }, [])
     console.log(notificationData)
     const viewBooking = (id) => {
-
         try {
             console.log(id, 'hellos')
             navigate('/artist/viewbooking', { state: { id } })

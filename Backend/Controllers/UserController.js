@@ -8,7 +8,16 @@ const bookingModel = require('../Models/bookingSchema')
 const notificationModel = require('../Models/artistNotificationModel');
 const artistModel = require("../Models/artistModel");
 const categoryModel = require('../Models/categoryModel')
+const sharp = require('sharp')
+const userNotificationModel = require('../Models/userNotificationModel')
 
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name: process.env.cloud_name,
+    api_key: process.env.api_key,
+    api_secret: process.env.api_secret,
+    secure: true,
+});
 // otp generating
 
 const otpGenerate = () => {
@@ -188,22 +197,56 @@ const authorization = async (req, res) => {
             .send({ message: 'Error getting user info', success: false, error })
     }
 }
-
 // Profile
 const profile = async (req, res) => {
     try {
-        console.log(req.body)
         const userData = await userModel.findById(req.body.userId)
         if (!userData) {
             return res.status(200).send({ message: 'somthing went wrong', success: false })
         }
-        res.status(200).send({ message: 'user datas get', success: true })
-        console.log(userData)
+        res.status(200).send({ message: 'user datas get', success: true, data: userData, image: userData.profile })
     } catch (error) {
         res.status(500).send({ message: 'somthing went wrong', success: false })
     }
 }
+// edit profile
+const editProfile = async (req, res) => {
+    try {
+        if (req.file) {
+            const image = req.file.filename;
+            await sharp("./uploads/userImages/" + image)
+                .resize(500, 500)
+                .toFile("./uploads/userProfileImages/" + image)
+            const data = await cloudinary.uploader.upload(
+                "./uploads/userProfileImages/" + image
+            );
+            const cdnUrl = data.secure_url;
+            await userModel.findByIdAndUpdate(req.body.userId,
+                {
+                    $set:
+                    {
+                        first_name: req.body.first_name, last_name: req.body.last_name, mobile: req.body.mobile, profile: cdnUrl
+                    }
+                })
+            const userData = await userModel.findOne({ _id: req.body.userId })
 
+            return res.status(200).send({ message: 'Profile Updated', success: true, data: userData })
+        } else {
+            await userModel.findByIdAndUpdate(req.body.userId,
+                {
+                    $set:
+                    {
+                        first_name: req.body.first_name, last_name: req.body.last_name, mobile: req.body.mobile
+                    }
+                })
+            const userData = await userModel.findOne({ _id: req.body.userId })
+            res.status(200).send({ message: 'Profile updated', success: true, data: userData })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
 // banner
 const getBannerData = async (req, res) => {
     try {
@@ -221,11 +264,6 @@ const getArtstMoreData = async (req, res) => {
     try {
         const categoryData = await categoryModel.find()
         const artistMore = await artistDetailsModel.find()
-        // console.log(artistMore[0].moreDetails)
-        // const datas = artistMore.map(element => {
-        //     return element.moreDetails
-        // })
-        // console.log('data:', datas, 'hai')
         if (!artistMore) {
             return res.status(200).send({ message: 'Artist data getting fail', success: false })
         }
@@ -237,6 +275,7 @@ const getArtstMoreData = async (req, res) => {
 
 const aritsView = async (req, res) => {
     try {
+        console.log(req.body)
         const artistMoreData = await artistDetailsModel.findById(req.body.artistId)
         if (!artistMoreData) {
             return res.status(200).send({ message: 'Not get artist data', success: false })
@@ -262,7 +301,7 @@ const aritistBooking = async (req, res) => {
             const year = dateObject.getUTCFullYear();
             const month = String(dateObject.getUTCMonth() + 1).padStart(2, '0');
             const day = String(dateObject.getUTCDate()).padStart(2, '0');
-            const formatedDate = `${year} -${month} -${day} `;
+            const formatedDate = `${year}-${month}-${day}`
             return formatedDate === req.body.date
         })
         if (dateValidation?.length > 0) {
@@ -343,7 +382,19 @@ const aritistBooking = async (req, res) => {
     }
     catch (error) {
         console.log(error)
-        res.status(200).send({ message: 'somthing went wrong', success: false, error })
+        res.status(500).send({ message: 'somthing went wrong', success: false, error })
+    }
+}
+
+const userNotification = async (req, res) => {
+    try {
+        const userNoticafionData = await userNotificationModel.findOne({ user_id: req.body.userId })
+        if (!userNoticafionData) {
+            return res.status(200).send({ message: 'Notificaion empty', success: false })
+        }
+        res.status(200).send({ message: 'get notifications', success: true, data: userNoticafionData.notifications })
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
     }
 }
 
@@ -352,13 +403,15 @@ module.exports = {
     login,
     authorization,
     profile,
+    editProfile,
     forgot,
     setPassword,
     otp,
     getBannerData,
     getArtstMoreData,
     aritsView,
-    aritistBooking
+    aritistBooking,
+    userNotification
 };
 
 

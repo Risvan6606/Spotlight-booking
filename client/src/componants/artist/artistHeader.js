@@ -3,11 +3,12 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import io from 'socket.io-client'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import './artistHeader.css'
 import { request } from '../../axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
+import { setArtistMore } from '../../Redux/aritsMoreSlice'
 
 
 const navigation = [
@@ -26,6 +27,7 @@ function ArtistHeader() {
 
     const [count, setCount] = useState()
     const artistMore = useSelector((state) => state.artistMore.artistMore)
+    const dispatch = useDispatch()
     var newSocket = io('http://localhost:5000');
     useEffect(() => {
         newSocket.on('chat message', (message) => {
@@ -44,6 +46,7 @@ function ArtistHeader() {
         }).then((response) => {
             if (response.data.success) {
                 setCount(response.data.data.length)
+                dispatch(setArtistMore(response.data.profile))
             } else {
                 setCount(0)
             }
@@ -59,8 +62,6 @@ function ArtistHeader() {
             toast.error('somthing went wrong')
         }
     }
-
-    // Edited
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
@@ -121,16 +122,14 @@ function ArtistHeader() {
                                         <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                             <span className="absolute -inset-1.5" />
                                             <span className="sr-only">Open user menu</span>
-                                            {artistMore?.map((element) => {
 
 
-                                                return < img
-                                                    className="h-8 w-8 rounded-full"
-                                                    src={element?.image
-                                                    }
-                                                    alt=""
-                                                />
-                                            })}
+                                            < img
+                                                className="h-8 w-8 rounded-full"
+                                                src={artistMore?.image
+                                                }
+                                                alt=""
+                                            />
                                         </Menu.Button>
                                     </div>
                                     <Transition
@@ -146,7 +145,7 @@ function ArtistHeader() {
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <a
-                                                        href='/artist/artistdetailsform'
+                                                        href='/artist/profile'
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Your Profile

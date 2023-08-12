@@ -347,3 +347,85 @@ label {
         padding: 0;
     }
 }
+
+/* /profile */
+.profile_div {
+    /* height: 500px; */
+    min-width: 100%;
+}
+
+.profile_h1 {
+    margin-top: 31px;
+    margin-left: 18px;
+}
+
+.profile_name {
+    font-size: 30px !important;
+    color: white;
+}
+
+.profile_email_mobile {
+    margin-top: 10px !important;
+    font-size: 15px !important;
+    color: white;
+}
+
+.profile_button {
+    background-color: green !important;
+    height: 50px;
+    font-size: 24px;
+    width: 100px;
+}
+
+.profile_image_div {
+    width: 200px;
+    margin-left: 14%;
+}
+
+.image_profile {
+    width: 200px;
+    margin-left: 21%;
+    height: 150px;
+}
+
+.profile_card_div {
+    background-color: rgb(31 41 55);
+
+}
+
+.edit_input {
+    height: 40px;
+    border: 1px solid black;
+    background: white;
+    margin-top: 8px;
+}
+
+.edit_form_main_div {
+    padding: 3% 6% 4% 6%;
+    background-color: rgb(31 41 55);
+    border-radius: 10px;
+    width: 61%;
+    margin-left: 20%;
+    margin-top: 20px;
+}
+
+.Edit_profile_heading {
+    color: white !important;
+    margin-bottom: 23px;
+    margin-left: 39%;
+}
+
+.edit_profile_image {
+    width: 100px;
+    border-radius: 62px;
+    margin-left: 40%;
+}
+
+/* . */
+.container {
+    margin-bottom: 150px;
+}
+
+.notificaion_box {
+    margin-bottom: 30px;
+}

@@ -3,15 +3,11 @@ import axios from 'axios'
 import ArtistHeader from '../../componants/artist/artistHeader'
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setArtistMore } from '../../Redux/aritsMoreSlice';
 
 function ArtistHome() {
     const [banner, setBanner] = useState([])
-    const dispatch = useDispatch()
-    // const notification = useSelector((state) => state.notification.notification);
-
-
     const getData = async () => {
         try {
             const response = await axios.post('/api/artist/get-artisthome-banner-data', {},
@@ -21,7 +17,6 @@ function ArtistHome() {
                     }
                 })
             setBanner(response.data.data)
-            dispatch(setArtistMore(response.data.profile))
         } catch (error) {
             console.log(error)
         }
@@ -30,7 +25,6 @@ function ArtistHome() {
     useEffect(() => {
         getData()
     }, [])
-    // Edited
     return (
         <>
             <ArtistHeader />

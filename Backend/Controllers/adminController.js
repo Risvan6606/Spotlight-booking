@@ -218,11 +218,10 @@ const artist_Block_And_Unblock = async (req, res) => {
 const getArtistMoreData = async (req, res) => {
     try {
         const artistMore = await artistDetailModel.findOne({ artist_id: req.body.artist_id })
-        artistMore.moreDetails
         if (!artistMore) {
             return res.status(200).send({ message: 'not get artist datas', success: false })
         }
-        res.status(200).send({ message: 'artist data get', success: true, data: artistMore.moreDetails })
+        res.status(200).send({ message: 'artist data get', success: true, data: artistMore })
     } catch (error) {
         res.status(500).send({ message: 'somthing went wrong', success: false })
     }

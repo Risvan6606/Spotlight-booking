@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import UserHeader from '../../componants/user/userHeader'
 import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-
+// import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import Footer from '../../componants/user/footer';
+import 'pure-react-carousel/dist/react-carousel.es.css';
 function Home() {
     const [banner, setBanner] = useState([])
     const getData = async () => {
@@ -34,7 +35,6 @@ function Home() {
                 showStatus={false}
             >
                 {banner.map((element) => {
-
                     return (
                         < div className='bannershow_div'>
                             <>
@@ -49,6 +49,8 @@ function Home() {
                 })
                 }
             </Carousel >
+
+            < Footer />
 
         </>
     )

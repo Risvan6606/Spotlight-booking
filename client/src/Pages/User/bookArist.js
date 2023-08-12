@@ -8,24 +8,23 @@ import io from 'socket.io-client'
 
 function BookArist() {
     // Edited
-
     var newSocket = io('http://localhost:5000');
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     newSocket.on('chat message', (message) => {
-    //         console.log('Received message:', message);
-    //     });
-    //     return () => {
-    //         newSocket.disconnect();
-    //     };
-    // }, []);
+        // newSocket.on('chat message', (message) => {
+        //     console.log('Received message:', message);
+        // });
+        // return () => {
+        //     newSocket.disconnect();
+        // };
+    }, []);
     // Edited
 
     const navigator = useNavigate()
     const singleArtist = useSelector((state) => state.singleArtist.singleArtist)
 
     useEffect(() => {
-        if (!singleArtist?.moreDetails?.[0]?.firstName) {
+        if (!singleArtist?.firstName) {
             navigator('/artist-show')
         }
     })
@@ -35,9 +34,9 @@ function BookArist() {
     })
     const [formData, setFormData] = useState({
         firstName: '',
-        amount: singleArtist?.moreDetails?.[0]?.midBudjet,
+        amount: singleArtist?.midBudjet,
         email: '',
-        artist: singleArtist?.moreDetails?.[0]?.firstName + ' ' + singleArtist?.moreDetails?.[0]?.lastName,
+        artist: singleArtist?.firstName + ' ' + singleArtist?.lastName,
         state: '',
         district: '',
         pincode: '',
@@ -126,7 +125,7 @@ function BookArist() {
                                 <input type="text"
                                     id="first_name"
                                     name='firstName'
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
                                     placeholder="John"
                                     onChange={handleInputChange}
                                     onClick={() => setValidation({ status: false })}
@@ -149,7 +148,7 @@ function BookArist() {
                                 <label for="company" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white artistDetailsLabel">Artist</label>
                                 <input type="text"
                                     id="artist"
-                                    value={singleArtist?.moreDetails?.[0]?.firstName + ' ' + singleArtist?.moreDetails?.[0]?.lastName}
+                                    value={singleArtist?.firstName + ' ' + singleArtist?.lastName}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='artist'
                                 // onChange={handleInputChange}
@@ -216,7 +215,7 @@ function BookArist() {
                                 <input type="number"
                                     id="phone"
                                     name='amount'
-                                    value={singleArtist?.moreDetails?.[0]?.midBudjet}
+                                    value={singleArtist?.midBudjet}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="123-45-678"
                                     // onChange={handleInputChange}

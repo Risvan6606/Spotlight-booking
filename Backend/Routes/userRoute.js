@@ -5,7 +5,7 @@ const userModel = require('../Models/userModel')
 const userRoute = express()
 const session = require('express-session')
 const sessionConfig = require('../Config/sessionConfig')
-
+const upload = require('../Config/userMulter')
 userRoute.use(session({
     secret: sessionConfig.sessionScrect,
     saveUninitialized: true,
@@ -20,10 +20,12 @@ userRoute.post('/forgot', userController.forgot)
 userRoute.post('/setpassword', userController.setPassword)
 userRoute.post('/get-user-info-by-id', authMiddileware, userController.authorization)
 userRoute.post('/user_profiledata', authMiddileware, userController.profile)
+userRoute.post('/edit-profile', upload.upload.single('image'), authMiddileware, userController.editProfile)
 userRoute.post('/get-home-banner-data', userController.getBannerData)
 userRoute.post('/get-artist-data', authMiddileware, userController.getArtstMoreData)
 userRoute.post('/artist-view', authMiddileware, userController.aritsView)
 userRoute.post('/bookartist', authMiddileware, userController.aritistBooking)
+userRoute.post('/notifications', authMiddileware, userController.userNotification)
 
 
 module.exports = userRoute

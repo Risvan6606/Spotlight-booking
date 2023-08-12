@@ -18,6 +18,8 @@ artistRoute.post('/forgotpassword', artistController.forgotPassword)
 artistRoute.post('/setpassword', artistController.setPassword)
 artistRoute.post('/get-artist-info-by-id', artistAuthmiddileware, artistController.authorization)
 artistRoute.post('/artist-more-details', upload.upload.single('image'), artistAuthmiddileware, artistController.artistMoreDetails)
+artistRoute.post('/get-profile-data', artistAuthmiddileware, artistController.profileData)
+artistRoute.post('/get-category-data', artistAuthmiddileware, artistController.categoryData)
 artistRoute.post('/get-artisthome-banner-data', artistAuthmiddileware, artistController.getBannerData)
 artistRoute.post('/get-notification-data', artistAuthmiddileware, artistController.notificationData)
 artistRoute.post('/get-booking-data', artistAuthmiddileware, artistController.bookingDatas)
@@ -25,5 +27,5 @@ artistRoute.post('/accept_and_reject', artistAuthmiddileware, artistController.a
 // artistRoute.post('/get-all-booking-datas', artistAuthmiddileware, artistController.allBookings)
 
 
-
+artistRoute.patch('/edit-profile', upload.upload.single('image'), artistAuthmiddileware, artistController.editProfile)
 module.exports = artistRoute

@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
+import { userRequest } from '../../axios'
+import { useDispatch, useSelector } from 'react-redux'
+
+// import io from 'socket.io-client'
 
 const navigation = [
     { name: 'Home', href: '/', current: true },
@@ -19,6 +23,8 @@ function classNames(...classes) {
 
 
 function UserHeader() {
+    const [count, setCount] = useState()
+    const [image, setImage] = useState('')
     const navigate = useNavigate()
     const signOut = () => {
         try {
@@ -28,6 +34,35 @@ function UserHeader() {
             toast.error('somthing went wrong')
         }
     }
+    // var newSocket = io('http://localhost:5000');
+    // useEffect(() => {
+    //     newSocket.on('chat message', (message) => {
+    //         console.log('Received message: risvan', message);
+    //         setCount(message)
+    //     });
+    //     // return () => {
+    //     //     newSocket.disconnect();
+    //     // };
+    // }, [])
+
+    const getData = async (req, res) => {
+        try {
+            userRequest({
+                url: '/api/user/user_profiledata',
+                method: 'post',
+            }).then((response) => {
+                setImage(response.data.image)
+            }).catch((err) => {
+                toast('please login after try again')
+            })
+        } catch (error) {
+
+        }
+    }
+    useEffect(() => {
+        getData()
+    }, [])
+
     return (
         <Disclosure as="nav" className="bg-gray-800 nav_bar_user">
             {({ open }) => (
@@ -73,14 +108,17 @@ function UserHeader() {
                                 </div>
                             </div>
                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                <button
+                                <a href='/notification'><button
                                     type="button"
-                                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                    className="artist-header d-flex relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                 >
-                                    <span className="absolute -inset-1.5" />
-                                    <span className="sr-only">View notifications</span>
                                     <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                </button>
+                                    <div className='artist_count'>
+                                        <h1 >
+                                            0 {/* {count} */}
+                                        </h1>
+                                    </div>
+                                </button></a>
 
                                 {/* Profile dropdown */}
                                 <Menu as="div" className="relative ml-3">
@@ -90,7 +128,7 @@ function UserHeader() {
                                             <span className="sr-only">Open user menu</span>
                                             <img
                                                 className="h-8 w-8 rounded-full"
-                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                src={image}
                                                 alt=""
                                             />
                                         </Menu.Button>

@@ -41,15 +41,15 @@ function ArtistAdminView() {
             <div className="adminArtistView sm:ml-64 ">
                 <section className='about'>
                     <div className='main'>
-                        <img src={moreData?.[0]?.image} />
+                        <img src={moreData?.image} />
 
                         <div className='about-text'>
-                            <h1>{`${moreData?.[0]?.firstName} ${moreData?.[0]?.lastName}`}</h1>
-                            <h5>{moreData?.[0]?.category}</h5>
-                            <p>{moreData?.[0]?.discription}</p>
+                            <h1>{`${moreData?.lastName}`}</h1>
+                            <h5>{moreData?.category}</h5>
+                            <p>{moreData?.discription}</p>
                         </div>
                     </div>
-                    <h1 className='minBudjet'>{` Booking rate:${moreData?.[0]?.midBudjet}`}</h1>
+                    <h1 className='minBudjet'>{` Booking rate:${moreData?.midBudjet}`}</h1>
                 </section >
             </div>
         </>

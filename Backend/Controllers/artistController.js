@@ -210,36 +210,116 @@ const artistMoreDetails = async (req, res) => {
             const artistMoreData = new artistMoreDetailsModel({
                 artist_id: req.body.artistId,
                 category_id: categoryData._id,
-                moreDetails: [
-                    {
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
-                        mobile: req.body.mobile,
-                        category: req.body.category,
-                        midBudjet: req.body.minBudget,
-                        availble: req.body.availability,
-                        discription: req.body.discription,
-                        image: cdnUrl
-                    },
-                ],
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                mobile: req.body.mobile,
+                category: req.body.category,
+                midBudjet: req.body.minBudget,
+                availble: req.body.availability,
+                discription: req.body.discription,
+                image: cdnUrl
             })
             await artistMoreData.save();
             res.status(200).send({ message: 'successfulll', success: true })
         }
     } catch (error) {
+        console.log(error)
         res.status(500).send({ message: 'somthing went wrong', success: false, error })
     }
 }
+
+const profileData = async (req, res) => {
+    try {
+        const artistMore = await artistMoreDetailsModel.findOne({ artist_id: req.body.artistId })
+        const personal = await artistModel.findById(req.body.artistId)
+        if (!artistMore) {
+            return res.status(200).send({ message: 'No datas', success: false })
+        }
+        res.status(200).send({ message: 'artist datas get', success: true, data: artistMore, personal: personal })
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+
+// edit profile
+const editProfile = async (req, res) => {
+    try {
+        // console.log(req.file)
+        console.log(req.body)
+        // console.log(req.body)
+        if (req.file) {
+            const image = req.file.filename;
+            await sharp("./uploads/artistImages/" + image)
+                .resize(500, 500)
+                .toFile("./uploads/profilImage/" + image)
+            const data = await cloudinary.uploader.upload(
+                "./uploads/profilImage/" + image
+            )
+            const cdnUrl = data.secure_url;
+            await artistMoreDetailsModel.updateOne({ artist_id: req.body.artistId },
+                {
+                    $set:
+                    {
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        mobild: req.body.mobile,
+                        category: req.body.category,
+                        midBudjet: req.body.midbudjet,
+                        availble: req.body.availble,
+                        discription: req.body.discription,
+                        image: cdnUrl
+                    }
+                }
+            )
+            await artistModel.findByIdAndUpdate(req.body.artistId,
+                {
+                    $set:
+                    {
+                        firstName: req.body.firstName, lastName: req.body.lastName, mobile: req.body.mobile
+                    }
+                }
+            )
+
+        } else {
+            await artistMoreDetailsModel.updateOne({ artist_id: req.body.artistId },
+                {
+                    $set:
+                    {
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        mobild: req.body.mobile,
+                        category: req.body.category,
+                        midBudjet: req.body.midbudjet,
+                        availble: req.body.availble,
+                        discription: req.body.discription,
+                    }
+                }
+            )
+            await artistModel.findByIdAndUpdate(req.body.artistId,
+                {
+                    $set:
+                    {
+                        firstName: req.body.firstName, lastName: req.body.lastName, mobile: req.body.mobile
+                    }
+                }
+            )
+        }
+        res.status(200).send({ message: 'Profile updated', success: true })
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+
 const getBannerData = async (req, res) => {
     try {
         const bannerData = await bannerModel.find({ status: true })
-        const moreData = await artistMoreDetailsModel.findOne({ artist_id: req.body.artistId })
+        // const moreData = await artistMoreDetailsModel.findOne({ artist_id: req.body.artistId })
         if (!bannerData) {
             return res.status(200).send({ message: 'not get Banner data', success: false })
         }
         const notificationData = await notificationModel.findOne({ artist_id: req.body.artistId })
         res.status(200).send({
-            message: 'Banner data getting successfull', success: true, data: bannerData, notification: notificationData, profile: moreData.moreDetails
+            message: 'Banner data getting successfull', success: true, data: bannerData, notification: notificationData,
         })
     } catch (error) {
         console.log(error)
@@ -247,15 +327,30 @@ const getBannerData = async (req, res) => {
     }
 }
 // notifications
+// catefory
+const categoryData = async (req, res) => {
+    try {
+        console.log('hai');
+        console.log(req.body)
+        const categoryData = await categoryModel.find()
+        if (!categoryData) {
+            return res.status(200).send({ message: 'categoroy data getting fail', success: false })
+        }
+        res.status(200).send({ message: 'categry data get', success: true, data: categoryData })
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
 
 const notificationData = async (req, res) => {
     try {
+        const moreData = await artistMoreDetailsModel.findOne({ artist_id: req.body.artistId })
         const notificationData = await notificationModel.findOne({ artist_id: req.body.artistId })
         if (!notificationData) {
             return res.status(200).send({ message: 'notificatications are Empty', success: false })
         }
         const showDatas = notificationData.notifications.filter(trues => trues.status === true)
-        res.status(200).send({ message: 'notification Data get', success: true, data: showDatas })
+        res.status(200).send({ message: 'notification Data get', success: true, data: showDatas, profile: moreData })
     } catch (error) {
         res.status(500).send({ message: 'somthing went wrong', success: false })
     }
@@ -312,7 +407,8 @@ const acceptAndReject = async (req, res) => {
                 await notificationData.save()
             }
             // editing end
-            res.status(200).send({ message: 'Booking has been rejected', success: true })
+            const userNotification = await userNotificationModel.findOne({ user_id: req.body.user_id })
+            res.status(200).send({ message: 'Booking has been rejected', success: true, userNotification: userNotification.notifications.length })
         } else {
             await bookingModel.updateOne({ artist_id: req.body.artistId, "orders._id": req.body.id }, { $set: { "orders.$.status": "Accepted" } })
             await notificationModel.updateOne({ artist_id: req.body.artistId, "notifications.booking_id": req.body.id }, { $set: { "notifications.$.status": false } })
@@ -330,7 +426,8 @@ const acceptAndReject = async (req, res) => {
                             notifications:
                             {
                                 name: "your booking has been accepted",
-                                booking_id: booking_id
+                                booking_id: booking_id,
+                                Actions: 'Accepted'
                             }
                         }
                     })
@@ -341,18 +438,20 @@ const acceptAndReject = async (req, res) => {
                     notifications: [
                         {
                             name: "your booking has been accepted",
-                            booking_id: booking_id
+                            booking_id: booking_id,
+                            Actions: 'Accepted'
                         }
                     ]
                 })
                 await notificationData.save()
             }
+            const userNotification = await userNotificationModel.findOne({ user_id: req.body.user_id })
             // Edited
-            res.status(200).send({ message: 'Booking has been rejected', success: true })
+            res.status(200).send({ message: 'Booking has been rejected', success: true, userNotification: userNotification.notifications.length })
         }
     } catch (error) {
         console.log(error)
-        res.status(500).send({ message: 'somthing went wrong', success: false })
+        res.status(500).send({ message: 'somthing went wrong', success: false, })
     }
 }
 // accepted bookings
@@ -381,6 +480,9 @@ module.exports = {
     forgotPassword,
     setPassword,
     artistMoreDetails,
+    profileData,
+    editProfile,
+    categoryData,
     getBannerData,
     notificationData,
     bookingDatas,

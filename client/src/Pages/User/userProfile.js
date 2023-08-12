@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UserHeader from "../../componants/user/userHeader";
 import Footer from "../../componants/user/footer";
 import { userRequest } from "../../axios";
 import { toast } from "react-hot-toast";
+// import EditProfile from "./editProfile";
 
 
 
 const UserProfile = () => {
+    const navigate = useNavigate()
     const [profile, setProfile] = useState([])
-    const [Details, setDetails] = useState()
     const getData = () => {
         userRequest({
             url: '/api/user/user_profiledata',
@@ -29,7 +30,14 @@ const UserProfile = () => {
 
     useEffect(() => {
         getData()
-    })
+    }, [])
+    const EditProfile = () => {
+        try {
+            navigate('/editprofile', { state: profile })
+        } catch (error) {
+            toast.error('somthing went wrong')
+        }
+    }
     return (
         <>
             <UserHeader />
@@ -37,43 +45,44 @@ const UserProfile = () => {
                 <div class="">
                     <div
                         style={{
-                            backgroundColor: "peru",
+                            backgroundColor: "#fff",
                             textAlign: "center",
                             color: "white",
                             fontSize: "large",
                         }}
                         class="bg-white shadow-md p-4"
                     >
-                        <h2>PROFILE</h2>
+
 
                         <div
-                            style={{ backgroundColor: "darkgoldenrod" }}
-                            className="max-w-sm mx-auto bg-white shadow-md rounded-lg overflow-hidden"
+                            // style={{ backgroundColor: "rgb(255, 255, 255)" }}
+                            className="max-w-sm mx-auto bg-white shadow-md rounded-lg overflow-hidden profile_card_div"
                         >
-                            <div className="p-6">
-                                <div className="flex items-center justify-center">
+                            <h2 className="profile_h1">PROFILE</h2>
+                            <div className="p-6 profile_div">
+                                <div className="flex items-center justify-center profile_image_div">
                                     <img
-                                        className="w-20 h-20 rounded-full object-cover object-center border-4 border-blue-500"
-                                        src={profile?.profile}
+                                        className="w-20 h-20 rounded-full object-cover object-center border-4 border-blue-500 image_profile"
+                                        src={profile.profile}
                                     // alt="Profile"
                                     />
                                 </div>
-                                <h2 className="mt-4 text-gray-800 text-lg font-semibold text-center">
-                                    {profile?.name}
+                                <h2 className="mt-4 text-gray-800 text-lg font-semibold text-center profile_name">
+                                    {`${profile?.first_name} ${profile?.last_name}`}
                                 </h2>
-                                <p className="text-gray-600 text-center">{profile?.email}</p>
-                                <p className="text-gray-600 text-center">{profile?.phone}</p>
+                                <p className="text-gray-600 text-center profile_email_mobile">{profile?.email}</p>
+                                <p className="text-gray-600 text-center profile_email_mobile">{profile?.mobile}</p>
 
-                                <div className="mt-4">
+                                {/* <div className="mt-4">
                                     <p className="text-gray-600">{Details?.description}</p>
-                                </div>
+                                </div> */}
                                 <div className="mt-6">
 
 
-                                    <h1 className="text-gray-600 text-center">
+                                    {/* <h1 className="text-gray-600 text-center">
                                         Location:-{Details?.location}
-                                    </h1>
-                                    {Details == null && (
+                                    </h1> */}
+                                    {/* {Details == null && (
                                         <Link to="/adDetails">
                                             <Button
                                                 type="primary"
@@ -87,19 +96,20 @@ const UserProfile = () => {
                                                 Add Id
                                             </Button>
                                         </Link>
-                                    )}
-                                    <Link to="/editprofile">
-                                        <Button
-                                            type="primary"
-                                            style={{ backgroundColor: "green", marginLeft: "10px" }}
-                                            size={10}
-                                        >
-                                            EDIT
-                                        </Button>
-                                    </Link>
+                                    )} */}
+                                    {/* < Link to="/editprofile"> */}
+                                    <Button className="profile_button"
+                                        onClick={() => EditProfile()}
+                                        type="primary"
+                                        style={{ backgroundColor: "green", marginLeft: "10px" }}
+                                        size={10}
+                                    >
+                                        EDIT
+                                    </Button>
+                                    {/* </Link> */}
                                 </div>
                             </div>
-                            <a
+                            {/* <a
 
                                 className="text-blue-500 hover:underline text-center block"
                             >
@@ -118,11 +128,11 @@ const UserProfile = () => {
                                 </div>
                                 <h2 className="text-lg font-semibold mb-2">ID NUMBER</h2>
                                 <p className="text-gray-600 text-sm">{Details?.idnumber}</p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
             < Footer />
         </>
     );

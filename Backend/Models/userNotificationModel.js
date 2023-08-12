@@ -17,6 +17,10 @@ const userNotificationSchema = mongoose.Schema({
         booking_id: {
             type: String,
             required: true
+        },
+        Actions: {
+            type: String,
+            default: 'Reject'
         }
     }]
 }, {
