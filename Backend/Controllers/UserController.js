@@ -10,6 +10,13 @@ const artistModel = require("../Models/artistModel");
 const categoryModel = require('../Models/categoryModel')
 const sharp = require('sharp')
 const userNotificationModel = require('../Models/userNotificationModel')
+const Razorpay = require('razorpay')
+
+
+var instance = new Razorpay({
+    key_id: process.env.razorPay_Key_id,
+    key_secret: process.env.razorPay_Key_Secret
+});
 
 const cloudinary = require('cloudinary').v2
 cloudinary.config({
@@ -347,6 +354,7 @@ const aritistBooking = async (req, res) => {
         } else {
             const bookingData = new bookingModel({
                 artist_id: req.body.artist_id,
+                user_id: req.body.userId,
                 orders: [
                     {
                         firstName: req.body.firstName,
@@ -359,7 +367,6 @@ const aritistBooking = async (req, res) => {
                         address: req.body.address,
                         date: req.body.date,
                         user_id: req.body.userId
-
                     }
                 ]
             })
@@ -397,6 +404,83 @@ const userNotification = async (req, res) => {
         res.status(500).send({ message: 'somthing went wrong', success: false })
     }
 }
+const confirmBookingData = async (req, res) => {
+    try {
+        const bookingData = await bookingModel.findOne({ user_id: req.body.userId })
+        const categoryData = await artistDetailsModel.findOne({ artist_id: bookingData.artist_id })
+        const singleBookingData = bookingData.orders.filter((items) => {
+            return items._id.toString() === req.body.booking_id
+        })
+        if (!singleBookingData) {
+            return res.status(200).send({ message: 'Not get any data', success: true })
+        }
+        res.status(200).send({ message: 'booking data getting success full', success: true, data: singleBookingData, category: categoryData.category })
+    } catch (error) {
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+const advancePayment = async (req, res) => {
+    try {
+        console.log(req.body)
+        var options = {
+            amount: req.body.advance * 100,
+            currency: "INR",
+            receipt: "" + req.body.booking_id,
+        };
+        instance.orders.create(options, function (err, order) {
+            res.status(200).send({ message: 'pay advance', success: true, data: order })
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: 'somthing went wrong', success: false })
+    }
+}
+
+const verifyPayment = async (req, res) => {
+    try {
+        const crypto = require("crypto");
+        let hmac = crypto.createHmac("sha256", process.env.razorPay_Key_Secret)
+        hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id)
+        hmac = hmac.digest('hex')
+        if (hmac == details.payment.razorpay_signature) {
+            await bookingModel.findOneAndUpdate({
+                'orders._id': details.order.receipt
+            },
+                { $set: { "orders.$.payment_id": details.payment.razorpay_payment_id } })
+
+            await bookingModel.findOneAndUpdate({ 'orders._id': details.order.receipt }, {
+                $set: {
+                    "orders.$.status": "Booked"
+                }
+            })
+            return res.status(200).send({ message: 'payment success full', success: true })
+        } else {
+            res.status(200).send({ message: 'payment fail', success: false })
+        }
+    } catch (error) {
+        res.status(500).send({ message: 'payment verification fail', success: false })
+    }
+}
+
+// booking datas
+const bookingData = async (req, res) => {
+    try {
+        const bookedData = await bookingModel.findOne({ user_id: req.body.userId })
+        const artistMoreData = await artistDetailsModel.findOne({ artist_id: bookedData.artist_id })
+        if (!bookedData) {
+            return res.status(200).send({ message: 'Booking data no available', success: false })
+        }
+        const booked = bookedData.orders.filter((order) => {
+            return order.status === 'Booked'
+        })
+        console.log(bookedData)
+        res.status(200).send({ message: 'Booking data gettting succfull', success: true, data: booked, artistMore: artistMoreData })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: 'data getting fail', success: false })
+    }
+}
+
 
 module.exports = {
     signUp,
@@ -411,7 +495,11 @@ module.exports = {
     getArtstMoreData,
     aritsView,
     aritistBooking,
-    userNotification
+    userNotification,
+    confirmBookingData,
+    advancePayment,
+    verifyPayment,
+    bookingData
 };
 
 

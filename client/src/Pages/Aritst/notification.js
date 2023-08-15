@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { request } from '../../axios'
 import ViewBooking from './viewBooking'
 import { toast } from 'react-hot-toast'
+import ArtistFooter from '../../componants/artist/artistFooter'
 
 function Notification() {
     const navigate = useNavigate()
@@ -67,12 +68,7 @@ function Notification() {
                     </div>
                 ))}
             </div >
-
-
-
-
-
-
+            <ArtistFooter />
         </>
     )
 }

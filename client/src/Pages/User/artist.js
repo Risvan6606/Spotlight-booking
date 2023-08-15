@@ -92,10 +92,6 @@ function Artist() {
             toast('somthing went wrong ')
         }
     }
-
-    console.log('artistMore:', artistMore)
-    console.log('value:', values)
-
     const filter = (value) => {
         const val = values.filter((element) => {
             return element.category_id === value
@@ -115,15 +111,14 @@ function Artist() {
     const handleSortingChange = (event) => {
         const selectedValue = event.target.value;
         setSortingOrder(selectedValue === 'High' ? 'desc' : 'asc');
-        console.log(selectedValue)
     };
 
     return (
         <>
             <UserHeader />
             {/* Edit */}
-            <div class="searchFilter">
-                <form class="md:flex">
+            <div class="searchFilter ">
+                <form class="md:flex ">
                     {/*  */}
                     <div class="dropdown">
                         <button class="dropbtn">Category</button>
@@ -169,8 +164,9 @@ function Artist() {
                     </div>
                 </form >
             </div >
+
             {/* Edit */}
-            < div className='d-flex showArtist_div' >
+            < div className='d-flex showArtist_div ' >
                 {artistMore.filter((user) => {
                     return search && search.toLowerCase() === '' ? user : user.firstName.toLowerCase().includes(search.toLowerCase())
                 }).sort((a, b) => {
@@ -181,7 +177,7 @@ function Artist() {
                     }
                 }).slice(startIndex, endIndex)
                     .map((element) => {
-                        return < div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 artist-cart-div" >
+                        return < div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 artist-cart-div" >
                             <a href="#">
                                 <img class="p-8 rounded-t-lg" onClick={() => artistView(element?._id)} src={element?.image} alt=" product image" />
                             </a>

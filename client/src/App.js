@@ -43,6 +43,8 @@ import EditProfile from './Pages/User/editProfile';
 import ArtistProfile from './Pages/Aritst/artistProfile';
 import AritistEditProfile from './Pages/Aritst/editProfile';
 import UserNotification from './Pages/User/userNotification';
+import ConfirmBooking from './Pages/User/confirmBooking';
+import UserBookings from './Pages/User/bookings';
 
 
 function App() {
@@ -68,6 +70,8 @@ function App() {
         <Route path='/artist-single-show' element={<ProtectedRoute>< ArtistView /></ProtectedRoute>} />
         <Route path='/book-artist' element={<ProtectedRoute>< BookArist /></ProtectedRoute>} />
         <Route path='/notification' element={<ProtectedRoute>< UserNotification /></ProtectedRoute>} />
+        <Route path='/confirm-payment' element={<ProtectedRoute><  ConfirmBooking /></ProtectedRoute>} />
+        <Route path='/bookings' element={<ProtectedRoute><  UserBookings /></ProtectedRoute>} />
         {/* Artist Side */}
         <Route path='/artist/login' element={<AritstPublicRoute>< ArtistLogin /></AritstPublicRoute>} />
         <Route path='/artist/signUp' element={<AritstPublicRoute><ArtistSignup /></AritstPublicRoute>} />

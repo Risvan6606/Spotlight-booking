@@ -12,21 +12,21 @@ function ArtistView() {
     return (
         <>
             <UserHeader />
-            {/* <div className="user_artist_view ">
+            <div className="user_artist_view ">
                 <section className='abouts'>
                     <div className='main'>
-                        <img src={datas.moreDetails?.[0]?.image} />
+                        <img src={datas?.image} />
 
                         <div className='about-texts'>
-                            <h1 >{`${datas.moreDetails?.[0]?.firstName} ${datas.moreDetails?.[0]?.lastName}`}</h1>
-                            <h5>{datas.moreDetails?.[0]?.category}</h5>
-                            <p>{datas.moreDetails?.[0]?.discription}</p>
+                            <h1 >{`${datas?.firstName} ${datas?.lastName}`}</h1>
+                            <h5>{datas?.category}</h5>
+                            <p>{datas?.discription}</p>
                         </div>
                     </div>
-                    <h1 className='minBudjets'>{` Booking rate:  ${datas?.moreDetails?.[0]?.midBudjet}`}</h1>
+                    <h1 className='minBudjets'>{` Booking rate:  ${datas?.midBudjet}`}</h1>
 
                 </section >
-            </div > */}
+            </div >
             <Footer />
         </>
     )

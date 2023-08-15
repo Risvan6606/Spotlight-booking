@@ -38,6 +38,15 @@ const UserProfile = () => {
             toast.error('somthing went wrong')
         }
     }
+
+    const Bookings = () => {
+        try {
+            navigate('/bookings')
+        } catch (error) {
+            toast.error('somthing went wrong please try again')
+
+        }
+    }
     return (
         <>
             <UserHeader />
@@ -104,7 +113,15 @@ const UserProfile = () => {
                                         style={{ backgroundColor: "green", marginLeft: "10px" }}
                                         size={10}
                                     >
-                                        EDIT
+                                        Edit
+                                    </Button>
+                                    <Button className="profile_bookings_button"
+                                        onClick={() => Bookings()}
+                                        type="primary"
+                                        style={{ backgroundColor: "green", marginLeft: "10px" }}
+                                        size={10}
+                                    >
+                                        Bookings
                                     </Button>
                                     {/* </Link> */}
                                 </div>

@@ -27,29 +27,28 @@ function Home() {
     return (
         <>
             <UserHeader />
-
-            <Carousel
-                autoPlay={true}
-                infiniteLoop={true}
-                showThumbs={false}
-                showStatus={false}
-            >
-                {banner.map((element) => {
-                    return (
-                        < div className='bannershow_div'>
-                            <>
-                                < img src={element.image} alt="Motorbike Smoke" className='banner_image' />
-                                <div className="legend">
-                                    <h5>First slide label</h5>
-                                    <p>Some representative placeholder content for the first slide.</p>
-                                </div>
-                            </>
-
-                        </div >)
-                })
-                }
-            </Carousel >
-
+            <div className='artist_home_carosel_div'>
+                <Carousel
+                    autoPlay={true}
+                    infiniteLoop={true}
+                    showThumbs={false}
+                    showStatus={false}
+                >
+                    {banner.map((element) => {
+                        return (
+                            < div className='bannershow_div'>
+                                <>
+                                    < img src={element.image} alt="Motorbike Smoke" className='banner_image' />
+                                    <div className="legend">
+                                        <h5>{element.title}</h5>
+                                        <p>{element.discription}</p>
+                                    </div>
+                                </>
+                            </div >)
+                    })
+                    }
+                </Carousel >
+            </div >
             < Footer />
 
         </>

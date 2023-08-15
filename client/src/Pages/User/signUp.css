@@ -372,14 +372,27 @@ label {
 
 .profile_button {
     background-color: green !important;
-    height: 50px;
-    font-size: 24px;
+    height: 30px;
+    /* font-size: px; */
     width: 100px;
+}
+
+.profile_button:hover {
+    background: rgb(255, 255, 255) !important;
+    border: 1px solid rgb(76, 128, 8) !important;
+    color: green !important;
+    border: 2px solid green !important;
 }
 
 .profile_image_div {
     width: 200px;
     margin-left: 14%;
+}
+
+.profile_bookings_button:hover {
+    background-color: white !important;
+    border: 2px solid rgb(74, 74, 157) !important;
+    color: rgb(74, 74, 157) !important;
 }
 
 .image_profile {
@@ -428,4 +441,8 @@ label {
 
 .notificaion_box {
     margin-bottom: 30px;
+}
+
+.confirm_booking_heading {
+    font-size: 20px !important;
 }

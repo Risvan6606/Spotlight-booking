@@ -89,7 +89,7 @@ input {
 
 .notification_content_div {
     display: flex;
-    margin: 2% 0% 0% 2%;
+    margin: 2% 0% 20% 2%;
 }
 
 .notification_botton_div {
@@ -125,64 +125,8 @@ input {
     padding: 2% 6% 0% 6%;
 }
 
-/* .artist profile */
-/* .artist_profile_div {
-    width: 100% !important;
-}
+.details_div {}
 
-.content_div {
-    width: 60%;
-    height: 450px;
-    background: #1f2937;
-}
-
-.artist-main_profile_div {
-    padding: 4% 8% 0% 8%;
-}
-
-.personal_information_div {
-    display: flex;
-
-}
-
-.personalDetails_div {
-    margin: 8% 0% 0% 15%;
-}
-
-.presonalDetalsh1 {
-    font-size: 160%;
-    color: white;
-    margin-bottom: 5px;
-}
-
-.personal_information_div {
-    background-color: #1f2937;
-}
-
-.heading_div {
-    font-size: 200%;
-}
-
-.heading_divs {
-    /* background-color: rgba(255, 255, 255, 0.519); */
-/* border-radius: 8px;
-font-size: 160%;
-/* margin-left: 39%; */
-/* }
-
-*/
-
-/* 
-.profile_artist_h1 {
-    background-color: rgb(255, 255, 255);
-    border-radius: 8px;
-    color: blue;
-}
-
-.profile_moreDetails_h1 {}
-
-.details_div {} */
-/* Define general styles */
 .artist-main_profile_div {
     display: flex;
     justify-content: center;
@@ -339,3 +283,7 @@ font-size: 160%;
 .artistEditButton {
     margin-left: 82%;
 }
+
+/* .artist_home_carosel_div {
+    padding: 0% 0% 0% 0%;
+} */

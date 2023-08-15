@@ -18,7 +18,12 @@
 }
 
 .bannershow_div {
-  height: 700px;
+  height: 600px;
+  border-radius: 6px !important;
+}
+
+.artist_home_carosel_div {
+  padding: 2% 2% 0% 2%;
 }
 
 .banner_image {

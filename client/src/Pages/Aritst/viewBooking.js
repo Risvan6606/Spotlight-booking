@@ -4,7 +4,8 @@ import { request } from '../../axios'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import Swal from 'sweetalert2'
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
+// import { isRejected } from '@reduxjs/toolkit'
 
 function ViewBooking() {
     const location = useLocation()
@@ -30,16 +31,16 @@ function ViewBooking() {
     useLayoutEffect(() => {
         getData()
     }, [])
-    var newSocket = io('http://localhost:5000');
-    useEffect(() => {
+    // var newSocket = io('http://localhost:5000');
+    // useEffect(() => {
 
-        newSocket.on('chat message', (message) => {
-            console.log('Received message:', message);
-        });
-        // return () => {
-        //     newSocket.disconnect();
-        // };
-    }, []);
+    // newSocket.on('chat message', (message) => {
+    //     console.log('Received message:', message);
+    // });
+    // return () => {
+    //     newSocket.disconnect();
+    // };
+    // }, []);
 
     const acceptAndReject = (id, user_id, email) => {
         if (id && email) {
@@ -59,6 +60,7 @@ function ViewBooking() {
                         data: { id: id, email: email, user_id: user_id }
                     }).then(async (response) => {
                         if (response.data.success) {
+                            console.log('rejected')
                             await Swal.fire(
                                 'Rejected!',
                                 'booking has been rejected.',
@@ -67,6 +69,8 @@ function ViewBooking() {
                             // newSocket.emit('chat message', response.data.userNotification)
                             Navigate('/artist/notification')
                         }
+                    }).catch((err) => {
+                        console.log(err)
                     })
                 }
             })
@@ -87,6 +91,7 @@ function ViewBooking() {
                         method: 'post',
                         data: { id: id, user_id: user_id }
                     }).then(async (response) => {
+                        console.log('accepted')
                         if (response.data.success) {
                             await Swal.fire(
                                 'Accepted!',
@@ -96,6 +101,8 @@ function ViewBooking() {
                             // newSocket.emit('chat message', response.data.userNotification)
                             Navigate('/artist/bookings')
                         }
+                    }).catch((err) => {
+                        console.log(err)
                     })
                 }
             })

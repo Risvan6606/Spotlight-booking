@@ -5,6 +5,10 @@ const bookingSchema = mongoose.Schema({
         ref: 'artist',
         required: true
     },
+    user_id: {
+        type: String,
+        required: true
+    },
     orders: [{
         firstName: {
             type: String,
@@ -45,10 +49,14 @@ const bookingSchema = mongoose.Schema({
         status: {
             type: String,
             default: 'pending'
-        },
+        }
+        ,
         user_id: {
             type: String,
             required: true
+        },
+        payment_id: {
+            type: String
         }
     }]
 }, {

@@ -26,7 +26,6 @@ function Forgotpassword() {
             [name]: value
         });
     };
-
     const configureCaptcha = () => {
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
             'size': 'invisible',
@@ -37,6 +36,7 @@ function Forgotpassword() {
             defaultCountry: 'IN'
         });
     }
+
 
     const onSignInSubmit = async (e) => {
         e.preventDefault()

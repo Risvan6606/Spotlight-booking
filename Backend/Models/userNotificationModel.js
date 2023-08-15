@@ -21,7 +21,11 @@ const userNotificationSchema = mongoose.Schema({
         Actions: {
             type: String,
             default: 'Reject'
-        }
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now,
+        },
     }]
 }, {
     timestamps: true

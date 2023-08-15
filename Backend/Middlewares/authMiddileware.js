@@ -12,13 +12,12 @@ module.exports = async (req, res, next) => {
                         success: false
                     })
             } else {
-                console.log('next')
+                // console.log('next')
                 req.body.userId = decoded.id;
                 next()
             }
         })
     } catch (error) {
-        console.log('haiss');
         return res.status(401).send({
             message: 'Auth failed',
             success: false

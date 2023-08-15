@@ -390,7 +390,9 @@ const acceptAndReject = async (req, res) => {
                             notifications:
                             {
                                 name: "your booking has been Rejected",
-                                booking_id: booking_id
+                                booking_id: booking_id,
+                                Actions: 'Rejected',
+                                timestamp: new Date(),
                             }
                         }
                     })
@@ -400,7 +402,9 @@ const acceptAndReject = async (req, res) => {
                     notifications: [
                         {
                             name: "your booking has been Rejected",
-                            booking_id: booking_id
+                            booking_id: booking_id,
+                            Actions: 'Rejected',
+                            timestamp: new Date(),
                         }
                     ]
                 })
@@ -427,7 +431,8 @@ const acceptAndReject = async (req, res) => {
                             {
                                 name: "your booking has been accepted",
                                 booking_id: booking_id,
-                                Actions: 'Accepted'
+                                Actions: 'Accepted',
+                                timestamp: new Date(),
                             }
                         }
                     })
@@ -439,7 +444,8 @@ const acceptAndReject = async (req, res) => {
                         {
                             name: "your booking has been accepted",
                             booking_id: booking_id,
-                            Actions: 'Accepted'
+                            Actions: 'Accepted',
+                            timestamp: new Date(),
                         }
                     ]
                 })
@@ -450,7 +456,6 @@ const acceptAndReject = async (req, res) => {
             res.status(200).send({ message: 'Booking has been rejected', success: true, userNotification: userNotification.notifications.length })
         }
     } catch (error) {
-        console.log(error)
         res.status(500).send({ message: 'somthing went wrong', success: false, })
     }
 }
